@@ -1,0 +1,21 @@
+{
+    "config": {
+      "step": {
+        "user": {
+          "title": "Bouygue Bbox registration",
+          "data": {
+            "host": "Host",
+            "password": "Password"
+          }
+        }
+      },
+      "error": {
+        "cannot_connect": "Failed to connect",
+        "invalid_auth": "Invalid authentication"
+      },
+      "abort": {
+        "already_configured": "Your account is already configured."
+      }
+    }
+  }
+  
