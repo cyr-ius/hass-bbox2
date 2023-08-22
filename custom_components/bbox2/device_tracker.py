@@ -43,16 +43,25 @@ class BboxDeviceTracker(BboxEntity, TrackerEntity):
         """Initialize."""
         super().__init__(coordinator, description)
         self._device = device
-        self._attr_unique_id = device["id"]
-        self._attr_name = device["hostname"]
-        self._attr_mac_address = device["macaddress"]
-        self._attr_ip_address = device["ipaddress"]
-        self._attr_source_type = SourceType.ROUTER
-        self._attr_device_info = {
-            "name": self.name,
-            "identifiers": {(DOMAIN, self.unique_id)},
-            "via_device": (DOMAIN, self.box_id),
-        }
+
+    @property
+    def unique_id(self):
+        self._attr_unique_id = self._device["id"]
+
+    @property
+    def source_type(self):
+        """Return the source type, eg gps or router, of the device."""
+        return SourceType.ROUTER
+
+    @property
+    def mac_address(self):
+        """Return mac address."""
+        return self._device["macaddress"]
+
+    @property
+    def ip_address(self):
+        """Return mac address."""
+        return self._device["ipaddress"]
 
     @property
     def is_connected(self):
@@ -60,3 +69,17 @@ class BboxDeviceTracker(BboxEntity, TrackerEntity):
         for device in self.coordinator.data["devices"]:
             if device['id'] == self.unique_id:
                 return device["active"] == 1
+
+    @property
+    def name(self):
+        """Return name."""
+        return self.host
+
+    @property
+    def device_info(self):
+        """Return the device info."""
+        return {
+            "name": self.name,
+            "identifiers": {(DOMAIN, self.unique_id)},
+            "via_device": (DOMAIN, self.box_id),
+        }
