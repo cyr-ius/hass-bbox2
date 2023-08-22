@@ -30,7 +30,7 @@ async def async_setup_entry(
     for description in SENSOR_TYPES:
         for device in coordinator.data["devices"]:
             entities.append(
-                BboxDeviceTracker(coordinator, description, device["hostname"])
+                BboxDeviceTracker(coordinator, description, device)
             )
 
     async_add_entities(entities)
@@ -39,32 +39,24 @@ async def async_setup_entry(
 class BboxDeviceTracker(BboxEntity, TrackerEntity):
     """Representation of a sensor."""
 
-    def __init__(self, coordinator, description, hostname) -> None:
+    def __init__(self, coordinator, description, device) -> None:
         """Initialize."""
         super().__init__(coordinator, description)
-        self.host = hostname
-
-    @property
-    def source_type(self):
-        """Return the source type, eg gps or router, of the device."""
-        return SourceType.ROUTER
-
-    @property
-    def mac_address(self):
-        """Return mac address."""
-        return self.coordinator.data["devices"][self.host]["macaddress"]
-
-    @property
-    def ip_address(self):
-        """Return mac address."""
-        return self.coordinator.data["devices"][self.host]["ipaddress"]
+        self._device = device
+        self._attr_unique_id = device["id"]
+        self._attr_name = device["hostname"]
+        self._attr_mac_address = device["macaddress"]
+        self._attr_ip_address = device["ipaddress"]
+        self._attr_source_type = SourceType.ROUTER
+        self._attr_device_info = {
+            "name": self.name,
+            "identifiers": {(DOMAIN, self.unique_id)},
+            "via_device": (DOMAIN, self.box_id),
+        }
 
     @property
     def is_connected(self):
         """Return connecting status."""
-        return self.coordinator.data["devices"][self.host]["active"] == 1
-
-    @property
-    def name(self):
-        """Return name."""
-        return self.host
+        for device in self.coordinator.data["devices"]:
+            if device['id'] == self.unique_id:
+                return device["active"] == 1

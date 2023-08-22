@@ -21,13 +21,12 @@ class BboxEntity(CoordinatorEntity[BboxDataUpdateCoordinator], Entity):
         """Initialize the entity."""
         super().__init__(coordinator)
         device = coordinator.data.get("info", {}).get("device", {})
-        sn = device.get("serialnumber", "ABC12345")
-
-        self._attr_unique_id = f"{sn}-{description.key}"
+        self.box_id = device.get("serialnumber", "ABC12345")
+        self._attr_unique_id = f"{self.box_id}-{description.key}"
         self._attr_name = description.key.capitalize().replace("_", " ")
         self.entity_description = description
         self._attr_device_info = {
-            "identifiers": {(DOMAIN, sn)},
+            "identifiers": {(DOMAIN, self.box_id)},
             "manufacturer": MANUFACTURER,
             "name": BBOX_NAME,
             "model": device.get("modelname"),
