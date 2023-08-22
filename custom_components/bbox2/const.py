@@ -18,3 +18,5 @@ TO_REDACT = {
     "account",
     "key",
 }
+BBOX_NAME = "Bbox"
+MANUFACTURER = "Bouygue"

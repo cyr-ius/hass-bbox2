@@ -3,6 +3,7 @@ from __future__ import annotations
 
 import logging
 from datetime import timedelta
+from typing import Any
 
 from pybbox2 import Bbox
 
@@ -31,15 +32,16 @@ class BboxDataUpdateCoordinator(DataUpdateCoordinator):
             password=entry.data[CONF_PASSWORD], api_host=entry.data[CONF_HOST]
         )
 
+    def _sync_update(self) -> dict[str, dict[str, Any]]:
+        return {
+            "info": self.bbox.get_bbox_info(),
+            "devices": self.bbox.get_all_connected_devices(),
+            "stats": self.bbox.get_ip_stats(),
+        }
+
     async def _async_update_data(self) -> dict:
         """Fetch datas."""
         try:
-            self.bbox.login()
-            info = self.bbox.get_bbox_info()
-            devices = self.bbox.get_all_connected_devices()
-            stats = self.bbox.get_ip_stats()
-            self.bbox.logout()
+            return await self.hass.async_add_executor_job(self._sync_update)
         except Exception as error:
             raise UpdateFailed from error
-        else:
-            return {"info": info, "devices": devices, "stats": stats}
