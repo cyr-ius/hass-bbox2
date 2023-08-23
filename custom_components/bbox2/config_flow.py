@@ -10,6 +10,7 @@ from homeassistant import config_entries
 from homeassistant.data_entry_flow import FlowResult
 from homeassistant.exceptions import HomeAssistantError
 from bboxpy import Bbox
+from bboxpy.exceptions import HttpRequestError
 
 from .const import DOMAIN, BBOX_URL, CONF_HOST, CONF_PASSWORD
 
@@ -35,14 +36,16 @@ class ConfigFlow(config_entries.ConfigFlow, domain=DOMAIN):
         errors: dict[str, str] = {}
         if user_input is not None:
             try:
-                bbox = Bbox(hostname=user_input[CONF_HOST], password=user_input[CONF_PASSWORD])
+                bbox = Bbox(
+                    hostname=user_input[CONF_HOST], password=user_input[CONF_PASSWORD]
+                )
                 await bbox.async_login()
                 # info = await bbox.device.async_get_bbox_summary()
                 # await self.async_set_unique_id(
                 #     info.get("device", {}).get("serialnumber", "ABC12345")
                 # )
                 # self._abort_if_unique_id_configured()
-            except CannotConnect:
+            except (HttpRequestError, CannotConnect):
                 errors["base"] = "cannot_connect"
             except InvalidAuth:
                 errors["base"] = "invalid_auth"
