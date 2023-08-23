@@ -4,8 +4,7 @@ from __future__ import annotations
 import logging
 
 from homeassistant.components.device_tracker import SourceType
-from homeassistant.components.device_tracker.config_entry import TrackerEntity
-from homeassistant.components.sensor import SensorEntityDescription
+from homeassistant.components.device_tracker.config_entry import ScannerEntity
 from homeassistant.config_entries import ConfigEntry
 from homeassistant.core import HomeAssistant
 from homeassistant.helpers.entity_platform import AddEntitiesCallback
@@ -15,10 +14,6 @@ from .entity import BboxEntity
 
 _LOGGER = logging.getLogger(__name__)
 
-SENSOR_TYPES: tuple[SensorEntityDescription, ...] = (
-    SensorEntityDescription(key="tracker", translation_key="tracker"),
-)
-
 
 async def async_setup_entry(
     hass: HomeAssistant, entry: ConfigEntry, async_add_entities: AddEntitiesCallback
@@ -26,27 +21,25 @@ async def async_setup_entry(
     """Set up sensor."""
     coordinator = hass.data[DOMAIN][entry.entry_id]
 
-    entities = []
-    for description in SENSOR_TYPES:
-        for device in coordinator.data["devices"]:
-            entities.append(
-                BboxDeviceTracker(coordinator, description, device)
-            )
+    entities = [
+        BboxDeviceTracker(coordinator, device) for device in coordinator.data["devices"]
+    ]
 
     async_add_entities(entities)
 
 
-class BboxDeviceTracker(BboxEntity, TrackerEntity):
+class BboxDeviceTracker(BboxEntity, ScannerEntity):
     """Representation of a sensor."""
 
-    def __init__(self, coordinator, description, device) -> None:
+    def __init__(self, coordinator, device) -> None:
         """Initialize."""
-        super().__init__(coordinator, description)
+        super().__init__(coordinator)
         self._device = device
 
     @property
     def unique_id(self):
-        self._attr_unique_id = self._device["id"]
+        """Return unique_id."""
+        return f"{self.box_id}-{self._device['id']}"
 
     @property
     def source_type(self):
@@ -67,13 +60,13 @@ class BboxDeviceTracker(BboxEntity, TrackerEntity):
     def is_connected(self):
         """Return connecting status."""
         for device in self.coordinator.data["devices"]:
-            if device['id'] == self.unique_id:
+            if device["id"] == self._device['id']:
                 return device["active"] == 1
 
     @property
     def name(self):
         """Return name."""
-        return self.host
+        return self._device["hostname"]
 
     @property
     def device_info(self):
