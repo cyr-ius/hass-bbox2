@@ -14,9 +14,9 @@
     "bboxpy"
   ],
   "requirements": [
-    "bboxpy==1.1.1"
+    "bboxpy==1.1.2"
   ],
   "ssdp": [],
   "zeroconf": [],
-  "version": "1.0.2"
+  "version": "1.0.3"
 }
