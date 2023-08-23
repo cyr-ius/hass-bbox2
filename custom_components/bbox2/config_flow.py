@@ -18,7 +18,7 @@ _LOGGER = logging.getLogger(__name__)
 STEP_USER_DATA_SCHEMA = vol.Schema(
     {
         vol.Required(CONF_HOST, default=BBOX_URL): str,
-        vol.Optional(CONF_PASSWORD): str,
+        vol.Required(CONF_PASSWORD): str,
     }
 )
 
