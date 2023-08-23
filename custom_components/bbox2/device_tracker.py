@@ -5,6 +5,7 @@ import logging
 
 from homeassistant.components.device_tracker import SourceType
 from homeassistant.components.device_tracker.config_entry import ScannerEntity
+from homeassistant.components.sensor import SensorEntityDescription
 from homeassistant.config_entries import ConfigEntry
 from homeassistant.core import HomeAssistant
 from homeassistant.helpers.entity_platform import AddEntitiesCallback
@@ -21,19 +22,22 @@ async def async_setup_entry(
     """Set up sensor."""
     coordinator = hass.data[DOMAIN][entry.entry_id]
 
+    description = SensorEntityDescription(key="tracker", translation_key="tracker")
+
     entities = [
-        BboxDeviceTracker(coordinator, device) for device in coordinator.data["devices"]
+        BboxDeviceTracker(coordinator, description, device)
+        for device in coordinator.data["devices"]
     ]
 
     async_add_entities(entities)
 
 
 class BboxDeviceTracker(BboxEntity, ScannerEntity):
-    """Representation of a sensor."""
+    """Representation of a tracked device."""
 
-    def __init__(self, coordinator, device) -> None:
+    def __init__(self, coordinator, description, device) -> None:
         """Initialize."""
-        super().__init__(coordinator)
+        super().__init__(coordinator, description)
         self._device = device
 
     @property
@@ -60,7 +64,7 @@ class BboxDeviceTracker(BboxEntity, ScannerEntity):
     def is_connected(self):
         """Return connecting status."""
         for device in self.coordinator.data["devices"]:
-            if device["id"] == self._device['id']:
+            if device["id"] == self._device["id"]:
                 return device["active"] == 1
 
     @property
