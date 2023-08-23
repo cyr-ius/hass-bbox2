@@ -5,14 +5,15 @@ import logging
 from typing import Any
 
 import voluptuous as vol
+from bboxpy import Bbox
+from bboxpy.exceptions import HttpRequestError
 
 from homeassistant import config_entries
 from homeassistant.data_entry_flow import FlowResult
 from homeassistant.exceptions import HomeAssistantError
-from bboxpy import Bbox
-from bboxpy.exceptions import HttpRequestError
+from homeassistant.helpers.aiohttp_client import async_create_clientsession
 
-from .const import DOMAIN, BBOX_URL, CONF_HOST, CONF_PASSWORD
+from .const import BBOX_URL, CONF_HOST, CONF_PASSWORD, DOMAIN
 
 _LOGGER = logging.getLogger(__name__)
 
@@ -37,7 +38,9 @@ class ConfigFlow(config_entries.ConfigFlow, domain=DOMAIN):
         if user_input is not None:
             try:
                 bbox = Bbox(
-                    hostname=user_input[CONF_HOST], password=user_input[CONF_PASSWORD]
+                    hostname=user_input[CONF_HOST],
+                    password=user_input[CONF_PASSWORD],
+                    session=async_create_clientsession(self.hass),
                 )
                 await bbox.async_login()
                 # info = await bbox.device.async_get_bbox_summary()
