@@ -10,9 +10,10 @@
   "homekit": {},
   "iot_class": "local_polling",
   "requirements": [
-    "bboxpy==1.0.9"
+    "bboxpy==1.1.0"
   ],
   "ssdp": [],
   "zeroconf": [],
   "version": "0.0.1"
 }
+  
