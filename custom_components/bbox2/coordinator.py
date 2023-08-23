@@ -34,7 +34,6 @@ class BboxDataUpdateCoordinator(DataUpdateCoordinator):
     async def _async_update_data(self) -> dict:
         """Fetch datas."""
         try:
-            await self.bbox.login()
             return {
                 "info": await self.bbox.device.get_bbox_info(),
                 "devices": await self.bbox.lan.async_get_connected_devices(),
