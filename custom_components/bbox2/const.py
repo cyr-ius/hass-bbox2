@@ -1,7 +1,7 @@
 """Constants for the Bouygues Bbox integration."""
 
 DOMAIN = "bbox2"
-BBOX_URL = "https://mabbox.bytel.fr"
+BBOX_URL = "mabbox.bytel.fr"
 CONF_PASSWORD = "password"
 CONF_HOST = "host"
 TO_REDACT = {

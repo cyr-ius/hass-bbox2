@@ -63,7 +63,7 @@ class BboxDeviceTracker(BboxEntity, ScannerEntity):
     @property
     def is_connected(self):
         """Return connecting status."""
-        for device in self.coordinator.data["devices"]:
+        for device in self.coordinator.data.get("devices", {}):
             if device["id"] == self._device["id"]:
                 return device["active"] == 1
 

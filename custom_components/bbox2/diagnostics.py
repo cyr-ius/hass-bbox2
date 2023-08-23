@@ -23,7 +23,7 @@ async def async_get_config_entry_diagnostics(
     async def diag(func: Callable[..., Any], *args: Any) -> None:
         rslt = {}
         with suppress(Exception):
-            rsp = await hass.async_add_executor_job(func, *args)
+            rsp = await func(*args)
             rslt = (
                 rsp
                 if isinstance(rsp, dict | list | set | float | int | str | tuple)
@@ -32,9 +32,9 @@ async def async_get_config_entry_diagnostics(
 
         _datas[0].update({func.__name__: rslt})
 
-    await diag(coordinator.bbox.get_bbox_info)
-    await diag(coordinator.bbox.get_all_connected_devices)
-    await diag(coordinator.bbox.get_ip_stats)
+    await diag(coordinator.bbox.device.async_get_bbox_info)
+    await diag(coordinator.bbox.lan.async_get_connected_devices)
+    await diag(coordinator.bbox.wan.async_get_wan_ip_stats)
 
     return {
         "entry": {

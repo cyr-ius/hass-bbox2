@@ -10,7 +10,7 @@
   "homekit": {},
   "iot_class": "local_polling",
   "requirements": [
-    "pybbox2==0.2.3"
+    "bboxpy>=1.0.8"
   ],
   "ssdp": [],
   "zeroconf": [],

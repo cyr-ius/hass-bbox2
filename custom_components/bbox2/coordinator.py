@@ -3,9 +3,8 @@ from __future__ import annotations
 
 import logging
 from datetime import timedelta
-from typing import Any
 
-from pybbox2 import Bbox
+from bboxpy import Bbox
 
 from homeassistant.core import HomeAssistant
 from homeassistant.helpers.update_coordinator import DataUpdateCoordinator, UpdateFailed
@@ -29,20 +28,18 @@ class BboxDataUpdateCoordinator(DataUpdateCoordinator):
             hass, _LOGGER, name=DOMAIN, update_interval=timedelta(seconds=SCAN_INTERVAL)
         )
         self.bbox = Bbox(
-            password=entry.data[CONF_PASSWORD], api_host=entry.data[CONF_HOST]
+            password=entry.data[CONF_PASSWORD], hostname=entry.data[CONF_HOST]
         )
-
-    def _sync_update(self) -> dict[str, dict[str, Any]]:
-        return {
-            "info": self.bbox.get_bbox_info(),
-            "devices": self.bbox.get_all_connected_devices(),
-            "stats": self.bbox.get_ip_stats(),
-        }
 
     async def _async_update_data(self) -> dict:
         """Fetch datas."""
         try:
-            return await self.hass.async_add_executor_job(self._sync_update)
+            await self.bbox.login()
+            return {
+                "info": await self.bbox.device.get_bbox_info(),
+                "devices": await self.bbox.lan.async_get_connected_devices(),
+                "stats": await self.bbox.wan.async_get_wan_ip_stats(),
+            }
         except Exception as error:
             _LOGGER.error(error)
             raise UpdateFailed from error

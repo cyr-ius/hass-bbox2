@@ -10,7 +10,8 @@ from homeassistant import config_entries
 from homeassistant.core import HomeAssistant
 from homeassistant.data_entry_flow import FlowResult
 from homeassistant.exceptions import HomeAssistantError
-import pybbox2
+from bboxpy import Bbox
+from bboxpy.exceptions import BboxException
 
 from .const import DOMAIN, BBOX_URL, CONF_HOST, CONF_PASSWORD
 
@@ -26,12 +27,12 @@ STEP_USER_DATA_SCHEMA = vol.Schema(
 
 async def validate_input(hass: HomeAssistant, data: dict[str, Any]) -> dict[str, Any]:
     """Validate the user input allows us to connect."""
-    bbox = pybbox2.Bbox(api_host=data[CONF_HOST], password=data[CONF_PASSWORD])
+    bbox = Bbox(hostname=data[CONF_HOST], password=data[CONF_PASSWORD])
 
     try:
-        await hass.async_add_executor_job(bbox.login)
+        await bbox.async_login()
         # return await hass.async_add_executor_job(bbox.get_bbox_info)
-    except Exception as error:
+    except BboxException as error:
         raise InvalidAuth(error) from error
 
 
