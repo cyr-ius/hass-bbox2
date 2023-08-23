@@ -10,8 +10,8 @@
   "iot_class": "local_polling",
   "issue_tracker": "https://github.com/cyr-ius/hass-bbox2/issues",
   "loggers": ["bboxpy"],
-  "requirements": ["bboxpy==1.1.4"],
+  "requirements": ["bboxpy==1.1.5"],
   "ssdp": [],
-  "version": "1.0.4",
+  "version": "1.0.5",
   "zeroconf": []
 }
