@@ -39,9 +39,7 @@ async def async_setup_entry(
     """Set up sensor."""
     coordinator = hass.data[DOMAIN][entry.entry_id]
 
-    entities = []
-    for description in SENSOR_TYPES:
-        entities.append(BboxSensor(coordinator, description))
+    entities = [BboxSensor(coordinator, description) for description in SENSOR_TYPES]
 
     async_add_entities(entities)
 
@@ -52,7 +50,7 @@ class BboxSensor(BboxEntity, SensorEntity):
     @property
     def state(self):
         """Return sensor state."""
-        device = self.coordinator.data["info"]["device"]
+        device = self.coordinator.data.get("info", {}).get("device", {})
         if self.entity_description.key == "temperature":
-            return device["temperature"]["current"]
+            return device.get("temperature", {}).get("current")
         return device[self.entity_description.key]
