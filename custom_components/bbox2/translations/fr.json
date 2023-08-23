@@ -1,0 +1,21 @@
+{
+    "config": {
+      "step": {
+        "user": {
+          "title": "Enregistrement Bouygue Bbox",
+          "data": {
+            "host": "Url",
+            "password": "Mot de passe"
+          }
+        }
+      },
+      "error": {
+        "cannot_connect": "Impossible de se connecter",
+        "invalid_auth": "Authentification incorrect"
+      },
+      "abort": {
+        "already_configured": "Votre équipement est déjà configuré."
+      }
+    }
+  }
+  
