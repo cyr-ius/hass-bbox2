@@ -19,4 +19,4 @@ TO_REDACT = {
     "key",
 }
 BBOX_NAME = "Bbox"
-MANUFACTURER = "Bouygue"
+MANUFACTURER = "Bouygues"

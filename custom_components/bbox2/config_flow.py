@@ -16,7 +16,6 @@ from .const import DOMAIN, BBOX_URL, CONF_HOST, CONF_PASSWORD
 
 _LOGGER = logging.getLogger(__name__)
 
-# TODO adjust the data schema to the data that you need
 STEP_USER_DATA_SCHEMA = vol.Schema(
     {
         vol.Required(CONF_HOST, default=BBOX_URL): str,
@@ -27,7 +26,6 @@ STEP_USER_DATA_SCHEMA = vol.Schema(
 
 async def validate_input(hass: HomeAssistant, data: dict[str, Any]) -> dict[str, Any]:
     """Validate the user input allows us to connect."""
-
     bbox = pybbox2.Bbox(api_host=data[CONF_HOST], password=data[CONF_PASSWORD])
 
     try:
