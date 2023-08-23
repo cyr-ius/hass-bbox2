@@ -1,6 +1,6 @@
 {
     "name": "Bouygues Bbox",
-    "domains": ["sensor", "binary_sensor", "device_tracker"],
+    "country": ["FR"],
     "homeassistant": "0.110.0",
     "render_readme": true
 }
