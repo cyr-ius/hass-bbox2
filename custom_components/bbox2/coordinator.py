@@ -42,6 +42,7 @@ class BboxDataUpdateCoordinator(DataUpdateCoordinator):
     async def _async_update_data(self) -> dict:
         """Fetch datas."""
         try:
-            return await self.hass.async_add_executor_job(self._sync_update)
+            return await self.hass.async_add_executor_job(self.bbox.get_bbox_info)
         except Exception as error:
+            _LOGGER.error(error)
             raise UpdateFailed from error
