@@ -7,6 +7,7 @@ from datetime import timedelta
 from bboxpy import Bbox
 
 from homeassistant.core import HomeAssistant
+from homeassistant.helpers.aiohttp_client import async_create_clientsession
 from homeassistant.helpers.update_coordinator import DataUpdateCoordinator, UpdateFailed
 
 from .const import CONF_HOST, CONF_PASSWORD, DOMAIN
@@ -28,14 +29,16 @@ class BboxDataUpdateCoordinator(DataUpdateCoordinator):
             hass, _LOGGER, name=DOMAIN, update_interval=timedelta(seconds=SCAN_INTERVAL)
         )
         self.bbox = Bbox(
-            password=entry.data[CONF_PASSWORD], hostname=entry.data[CONF_HOST]
+            password=entry.data[CONF_PASSWORD],
+            hostname=entry.data[CONF_HOST],
+            session=async_create_clientsession(self.hass),
         )
 
     async def _async_update_data(self) -> dict:
         """Fetch datas."""
         try:
             return {
-                "info": await self.bbox.device.get_bbox_info(),
+                "info": await self.bbox.device.async_get_bbox_info(),
                 "devices": await self.bbox.lan.async_get_connected_devices(),
                 "stats": await self.bbox.wan.async_get_wan_ip_stats(),
             }
