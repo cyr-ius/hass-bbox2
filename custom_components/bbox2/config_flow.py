@@ -30,7 +30,7 @@ async def validate_input(hass: HomeAssistant, data: dict[str, Any]) -> dict[str,
 
     try:
         await hass.async_add_executor_job(bbox.login)
-        return await hass.async_add_executor_job(bbox.get_bbox_info)
+        # return await hass.async_add_executor_job(bbox.get_bbox_info)
     except Exception as error:
         raise InvalidAuth(error) from error
 
@@ -47,11 +47,11 @@ class ConfigFlow(config_entries.ConfigFlow, domain=DOMAIN):
         errors: dict[str, str] = {}
         if user_input is not None:
             try:
-                info = await validate_input(self.hass, user_input)
-                await self.async_set_unique_id(
-                    info.get("device", {}).get("serialnumber", "ABC12345")
-                )
-                self._abort_if_unique_id_configured()
+                await validate_input(self.hass, user_input)
+                # await self.async_set_unique_id(
+                #     info.get("device", {}).get("serialnumber", "ABC12345")
+                # )
+                # self._abort_if_unique_id_configured()
             except CannotConnect:
                 errors["base"] = "cannot_connect"
             except InvalidAuth:
