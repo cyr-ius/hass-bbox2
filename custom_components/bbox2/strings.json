@@ -5,7 +5,7 @@
           "title": "Bouygue Bbox registration",
           "data": {
             "host": "[%key:common::config_flow::data::host%]",
-            "password": "[%key:common::config_flow::data::password%]",
+            "password": "[%key:common::config_flow::data::password%]"
           }
         }
       },
