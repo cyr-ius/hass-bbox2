@@ -37,10 +37,44 @@ class BboxDataUpdateCoordinator(DataUpdateCoordinator):
     async def _async_update_data(self) -> dict:
         """Fetch datas."""
         try:
+            rslt = await self.bbox.device.async_get_bbox_info()
+            if len(rslt) == 1:
+                bbox_info = rslt[0]
+            else:
+                bbox_info = rslt
+
+            rslt = await self.bbox.lan.async_get_connected_devices()
+            if len(rslt) == 1:
+                devices = rslt[0]
+            else:
+                devices = rslt
+
+            rslt = await self.bbox.wan.async_get_wan_ip_stats()
+            if len(rslt) == 1:
+                wan_ip_stats = rslt[0]
+            else:
+                wan_ip_stats = rslt
+
+            # if (
+            #     bbox_info.get("device", {}).get("adsl") == 1
+            #     or bbox_info("device", {}).get("vdsl") == 1
+            # ):
+            #     physical_stats = await self.bbox.wan.async_get_wan_xdsl()
+            # elif bbox_info("device", {}).get("ftth") == 1:
+            #     physical_stats = await self.bbox.wan.async_get_wan_ftth()
+            # else:
+            #     physical_stats = {}
+
             return {
-                "info": await self.bbox.device.async_get_bbox_info(),
-                "devices": await self.bbox.lan.async_get_connected_devices(),
-                "stats": await self.bbox.wan.async_get_wan_ip_stats(),
+                "info": bbox_info,
+                "devices": devices,
+                "wan_ip_stats": wan_ip_stats,
+                # "wan": await self.bbox.wan.async_get_wan_ip(),
+                # "physical_stats": physical_stats,
+                # "iptv_channels_infos": await self.bbox.iptv.async_get_iptv_info(),
+                # "lan_stats": await self.bbox.lan.async_get_lan_stats(),
+                # "voicemail": await self.bbox.lan.async_get_voip_voicemail(),
+                # "physical_support": physical_support
             }
         except Exception as error:
             _LOGGER.error(error)
