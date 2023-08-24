@@ -37,7 +37,7 @@ async def async_get_config_entry_diagnostics(
     await diag(coordinator.bbox.wan.async_get_wan_ip)
     await diag(coordinator.bbox.iptv.async_get_iptv_info)
     await diag(coordinator.bbox.lan.async_get_lan_stats)
-    await diag(coordinator.bbox.lan.async_get_voip_voicemail)
+    await diag(coordinator.bbox.voip.async_get_voip_voicemail)
     await diag(coordinator.bbox.lan.async_get_device_infos)
 
     return {
