@@ -6,6 +6,8 @@ on:
 jobs:
   release:
     runs-on: ubuntu-latest
+    permissions:
+      write-all
     steps:
       # To use this repository's private action, you must check out the repository
       - name: Checkout
