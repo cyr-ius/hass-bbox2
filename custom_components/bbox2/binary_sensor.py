@@ -1,8 +1,10 @@
 """Support for Bbox binary sensors."""
 from __future__ import annotations
 
+import logging
+
 from homeassistant.components.binary_sensor import (
-    BinarySensorEntityDescription,
+    BinarySensorDeviceClass,
     BinarySensorEntity,
 )
 from homeassistant.config_entries import ConfigEntry
@@ -11,27 +13,16 @@ from homeassistant.helpers.entity_platform import AddEntitiesCallback
 
 from .const import DOMAIN
 from .entity import BboxEntity
+from .helpers import BboxBinarySensorDescription, finditem
 
-SENSOR_TYPES: tuple[BinarySensorEntityDescription, ...] = (
-    BinarySensorEntityDescription(
-        key="ipv4",
-        name="IPV4 Enabled",
-    ),
-    BinarySensorEntityDescription(
-        key="ipv6",
-        name="IPV6 Enabled",
-    ),
-    BinarySensorEntityDescription(
-        key="ftth",
-        name="FTTH enabled",
-    ),
-    BinarySensorEntityDescription(
-        key="adsl",
-        name="Adsl",
-    ),
-    BinarySensorEntityDescription(
-        key="vdsl",
-        name="Vdsl",
+_LOGGER = logging.getLogger(__name__)
+
+SENSOR_TYPES: tuple[BboxBinarySensorDescription, ...] = (
+    BboxBinarySensorDescription(
+        key="info.device.status",
+        name="Link status",
+        device_class=BinarySensorDeviceClass.CONNECTIVITY,
+        value_fn=lambda x: x == 1,
     ),
 )
 
@@ -55,5 +46,8 @@ class BboxBinarySensor(BboxEntity, BinarySensorEntity):
     @property
     def is_on(self):
         """Return sensor state."""
-        device = self.coordinator.data.get("info", {}).get("device", {})
-        return device[self.entity_description.key] == 1
+        _LOGGER.debug("%s %s", self.name, self.entity_description.key)
+        data = finditem(self.coordinator.data, self.entity_description)
+        if self.entity_description.value_fn is not None:
+            return self.entity_description.value_fn(data)
+        return data

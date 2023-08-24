@@ -26,7 +26,9 @@ async def async_setup_entry(
 
     entities = [
         BboxDeviceTracker(coordinator, description, device)
-        for device in coordinator.data["devices"]
+        for device in coordinator.data.get("devices", {})
+        .get("hosts", {})
+        .get("list", [])
     ]
 
     async_add_entities(entities)
@@ -34,6 +36,9 @@ async def async_setup_entry(
 
 class BboxDeviceTracker(BboxEntity, ScannerEntity):
     """Representation of a tracked device."""
+
+    _attr_has_entity_name = True
+    _attr_entity_registry_enabled_default = False
 
     def __init__(self, coordinator, description, device) -> None:
         """Initialize."""
@@ -43,7 +48,7 @@ class BboxDeviceTracker(BboxEntity, ScannerEntity):
     @property
     def unique_id(self):
         """Return unique_id."""
-        return f"{self.box_id}-{self._device['id']}"
+        return self._device["macaddress"]
 
     @property
     def source_type(self):
@@ -63,14 +68,22 @@ class BboxDeviceTracker(BboxEntity, ScannerEntity):
     @property
     def is_connected(self):
         """Return connecting status."""
-        for device in self.coordinator.data.get("devices", {}):
-            if device["id"] == self._device["id"]:
-                return device["active"] == 1
+        for device in (
+            self.coordinator.data.get("devices", {}).get("hosts", {}).get("list", [])
+        ):
+            if device["macaddress"] == self._device["macaddress"]:
+                return device.get("active", 0) == 1
 
     @property
     def name(self):
         """Return name."""
-        return self._device["hostname"]
+        if self._device["userfriendlyname"] != "":
+            name = self._device["userfriendlyname"]
+        elif self._device["hostname"] != "":
+            name = self._device["hostname"]
+        else:
+            name = self._device["macaddress"]
+        return name
 
     @property
     def device_info(self):
@@ -79,4 +92,13 @@ class BboxDeviceTracker(BboxEntity, ScannerEntity):
             "name": self.name,
             "identifiers": {(DOMAIN, self.unique_id)},
             "via_device": (DOMAIN, self.box_id),
+        }
+
+    @property
+    def extra_state_attributes(self):
+        """Return extra attributes."""
+        return {
+            "link": self._device.get("link"),
+            "last_seen": self._device.get("lastseen"),
+            "ip_address": self._device.get("ipaddress"),
         }

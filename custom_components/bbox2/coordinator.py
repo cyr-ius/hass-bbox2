@@ -37,33 +37,9 @@ class BboxDataUpdateCoordinator(DataUpdateCoordinator):
     async def _async_update_data(self) -> dict:
         """Fetch datas."""
         try:
-            rslt = await self.bbox.device.async_get_bbox_info()
-            if len(rslt) == 1:
-                bbox_info = rslt[0]
-            else:
-                bbox_info = rslt
-
-            rslt = await self.bbox.lan.async_get_connected_devices()
-            if len(rslt) == 1:
-                devices = rslt[0]
-            else:
-                devices = rslt
-
-            rslt = await self.bbox.wan.async_get_wan_ip_stats()
-            if len(rslt) == 1:
-                wan_ip_stats = rslt[0]
-            else:
-                wan_ip_stats = rslt
-
-            # if (
-            #     bbox_info.get("device", {}).get("adsl") == 1
-            #     or bbox_info("device", {}).get("vdsl") == 1
-            # ):
-            #     physical_stats = await self.bbox.wan.async_get_wan_xdsl()
-            # elif bbox_info("device", {}).get("ftth") == 1:
-            #     physical_stats = await self.bbox.wan.async_get_wan_ftth()
-            # else:
-            #     physical_stats = {}
+            bbox_info = self.check_list({await self.bbox.device.async_get_bbox_info()})
+            devices = self.check_list(await self.bbox.lan.async_get_connected_devices())
+            wan_ip_stats = self.check_list(await self.bbox.wan.async_get_wan_ip_stats())
 
             return {
                 "info": bbox_info,
@@ -79,3 +55,13 @@ class BboxDataUpdateCoordinator(DataUpdateCoordinator):
         except Exception as error:
             _LOGGER.error(error)
             raise UpdateFailed from error
+
+    @staticmethod
+    def check_list(obj):
+        """Return element if one only."""
+        if isinstance(obj, list) and len(obj) == 1:
+            return obj[0]
+        else:
+            raise UpdateFailed(
+                "The call is not a list or it contains more than one element"
+            )

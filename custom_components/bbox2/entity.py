@@ -6,7 +6,7 @@ import logging
 from homeassistant.helpers.entity import Entity
 from homeassistant.helpers.update_coordinator import CoordinatorEntity
 
-from .const import BBOX_NAME, DOMAIN, MANUFACTURER
+from .const import BBOX_NAME, DOMAIN, MANUFACTURER, CONF_HOST
 from .coordinator import BboxDataUpdateCoordinator
 
 _LOGGER = logging.getLogger(__name__)
@@ -23,11 +23,12 @@ class BboxEntity(CoordinatorEntity[BboxDataUpdateCoordinator], Entity):
         device = coordinator.data.get("info", {}).get("device", {})
         self.box_id = device.get("serialnumber", "ABC12345")
         self._attr_unique_id = f"{self.box_id}-{description.key}"
-        self._attr_name = description.key.capitalize().replace("_", " ")
         self.entity_description = description
         self._attr_device_info = {
             "identifiers": {(DOMAIN, self.box_id)},
             "manufacturer": MANUFACTURER,
             "name": BBOX_NAME,
             "model": device.get("modelname"),
+            "sw_version": device.get("main", {}).get("version"),
+            "configuration_url": f'https://{coordinator.config_entry.data[CONF_HOST]}',
         }
