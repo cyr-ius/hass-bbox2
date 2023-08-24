@@ -30,11 +30,15 @@ async def async_get_config_entry_diagnostics(
                 else vars(rsp)
             )
 
-        _datas[0].update({func.__name__: rslt})
+        _datas.update({func.__name__: rslt})
 
     await diag(coordinator.bbox.device.async_get_bbox_info)
     await diag(coordinator.bbox.lan.async_get_connected_devices)
-    await diag(coordinator.bbox.wan.async_get_wan_ip_stats)
+    await diag(coordinator.bbox.wan.async_get_wan_ip)
+    await diag(coordinator.bbox.iptv.async_get_iptv_info)
+    await diag(coordinator.bbox.lan.async_get_lan_stats)
+    await diag(coordinator.bbox.lan.async_get_voip_voicemail)
+    await diag(coordinator.bbox.lan.async_get_device_infos)
 
     return {
         "entry": {

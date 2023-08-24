@@ -47,7 +47,7 @@ class BboxBinarySensor(BboxEntity, BinarySensorEntity):
     def is_on(self):
         """Return sensor state."""
         _LOGGER.debug("%s %s", self.name, self.entity_description.key)
-        data = finditem(self.coordinator.data, self.entity_description)
+        data = finditem(self.coordinator.data, self.entity_description.key)
         if self.entity_description.value_fn is not None:
             return self.entity_description.value_fn(data)
         return data

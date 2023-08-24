@@ -102,7 +102,7 @@ class BboxSensor(BboxEntity, SensorEntity):
     @property
     def native_value(self):
         """Return sensor state."""
-        data = finditem(self.coordinator.data, self.entity_description)
+        data = finditem(self.coordinator.data, self.entity_description.key)
         if self.entity_description.value_fn is not None:
             return self.entity_description.value_fn(data)
         return data

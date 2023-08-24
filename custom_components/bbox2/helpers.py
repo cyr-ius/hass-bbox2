@@ -5,6 +5,7 @@ from dataclasses import dataclass
 from homeassistant.helpers.typing import StateType
 from homeassistant.components.sensor import SensorEntityDescription
 from homeassistant.components.binary_sensor import BinarySensorEntityDescription
+from typing import Any
 
 
 @dataclass
@@ -24,9 +25,14 @@ class BboxBinarySensorDescription(BboxValueFnMixin, BinarySensorEntityDescriptio
     """Describes a sensor."""
 
 
-def finditem(data, entity_description):
-    if (keys := entity_description.key.split(".")) and isinstance(keys, list):
+def finditem(data: dict[str, Any], key_chain: str, default: Any = None) -> Any:
+    """Get recursive key and return value.
+
+    data is a mandatory dictonnary
+    key , string with dot for key delimited (ex: "key.key.key")
+    """
+    if (keys := key_chain.split(".")) and isinstance(keys, list):
         for key in keys:
             if isinstance(data, dict):
                 data = data.get(key)
-    return data
+    return default if data is None and default is not None else data
