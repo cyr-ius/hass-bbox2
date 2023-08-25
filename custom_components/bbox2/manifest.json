@@ -1,5 +1,5 @@
 {
-  "domain": "bbox2",
+  "domain": "bbox",
   "name": "Bouygues Bbox",
   "codeowners": ["@cyr-ius"],
   "config_flow": true,

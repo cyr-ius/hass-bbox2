@@ -30,7 +30,7 @@ class BboxEntity(CoordinatorEntity[BboxDataUpdateCoordinator], Entity):
             # "connections": {
             #     (
             #         CONNECTION_NETWORK_MAC,
-            #         finditem(coordinator.data, "device_info.hosts.macaddress"),
+            #         finditem(coordinator.data, "device_info.hosts.macaddress", "01:02:03:04:05:06"),
             #     )
             # },
             "manufacturer": MANUFACTURER,
