@@ -5,8 +5,8 @@ import logging
 
 from homeassistant.helpers.entity import Entity
 from homeassistant.helpers.update_coordinator import CoordinatorEntity
-from homeassistant.helpers.device_registry import CONNECTION_NETWORK_MAC
-from .const import BBOX_NAME, DOMAIN, MANUFACTURER, CONF_HOST
+
+from .const import BBOX_NAME, CONF_HOST, DOMAIN, MANUFACTURER
 from .coordinator import BboxDataUpdateCoordinator
 from .helpers import finditem
 
