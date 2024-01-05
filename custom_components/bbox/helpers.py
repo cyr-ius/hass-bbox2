@@ -1,28 +1,27 @@
 """Helpers for component."""
 from __future__ import annotations
+
 from collections.abc import Callable
 from dataclasses import dataclass
-from homeassistant.helpers.typing import StateType
-from homeassistant.components.sensor import SensorEntityDescription
-from homeassistant.components.binary_sensor import BinarySensorEntityDescription
 from typing import Any
 
+from homeassistant.components.binary_sensor import BinarySensorEntityDescription
+from homeassistant.components.sensor import SensorEntityDescription
+from homeassistant.helpers.typing import StateType
 
-@dataclass
-class BboxValueFnMixin:
-    """Mixin for Audi sensor."""
+
+@dataclass(frozen=True)
+class BboxSensorDescription(SensorEntityDescription):
+    """Describes a sensor."""
 
     value_fn: Callable[..., StateType] | None = None
 
 
-@dataclass
-class BboxSensorDescription(BboxValueFnMixin, SensorEntityDescription):
+@dataclass(frozen=True)
+class BboxBinarySensorDescription(BinarySensorEntityDescription):
     """Describes a sensor."""
 
-
-@dataclass
-class BboxBinarySensorDescription(BboxValueFnMixin, BinarySensorEntityDescription):
-    """Describes a sensor."""
+    value_fn: Callable[..., StateType] | None = None
 
 
 def finditem(data: dict[str, Any], key_chain: str, default: Any = None) -> Any:

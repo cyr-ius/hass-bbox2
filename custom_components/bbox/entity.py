@@ -27,12 +27,6 @@ class BboxEntity(CoordinatorEntity[BboxDataUpdateCoordinator], Entity):
         self.entity_description = description
         self._attr_device_info = {
             "identifiers": {(DOMAIN, self.box_id)},
-            # "connections": {
-            #     (
-            #         CONNECTION_NETWORK_MAC,
-            #         finditem(coordinator.data, "device_info.hosts.macaddress", "01:02:03:04:05:06"),
-            #     )
-            # },
             "manufacturer": MANUFACTURER,
             "name": BBOX_NAME,
             "model": device.get("modelname"),
