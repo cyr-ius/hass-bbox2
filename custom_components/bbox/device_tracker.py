@@ -24,11 +24,12 @@ async def async_setup_entry(
 
     description = SensorEntityDescription(key="tracker", translation_key="tracker")
 
+    devices = coordinator.data.get("devices", {}).get("hosts", {}).get("list", [])
+
     entities = [
         BboxDeviceTracker(coordinator, description, device)
-        for device in coordinator.data.get("devices", {})
-        .get("hosts", {})
-        .get("list", [])
+        for device in devices
+        if device.get("macaddress")
     ]
 
     async_add_entities(entities)
@@ -77,9 +78,9 @@ class BboxDeviceTracker(BboxEntity, ScannerEntity):
     @property
     def name(self):
         """Return name."""
-        if self._device["userfriendlyname"] != "":
+        if self._device.get("userfriendlyname") != "":
             name = self._device["userfriendlyname"]
-        elif self._device["hostname"] != "":
+        elif self._device.get("hostname") != "":
             name = self._device["hostname"]
         else:
             name = self._device["macaddress"]
