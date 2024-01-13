@@ -78,7 +78,7 @@ class BboxDeviceTracker(BboxEntity, ScannerEntity):
     @property
     def name(self):
         """Return name."""
-        if self._device.get("userfriendlyname") != "":
+        if self._device.get("userfriendlyname", "") != "":
             name = self._device["userfriendlyname"]
         elif self._device.get("hostname") != "":
             name = self._device["hostname"]
