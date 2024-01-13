@@ -1,11 +1,12 @@
 """Button for Bbox router."""
 import logging
 
+from bboxpy.exceptions import BboxException
 from homeassistant.components.button import ButtonEntity, ButtonEntityDescription
 from homeassistant.config_entries import ConfigEntry
 from homeassistant.core import HomeAssistant
 from homeassistant.helpers.entity_platform import AddEntitiesCallback
-from bboxpy.exceptions import BboxException
+
 from .const import DOMAIN
 from .entity import BboxEntity
 

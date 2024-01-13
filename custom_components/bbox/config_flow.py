@@ -7,7 +7,6 @@ from typing import Any
 import voluptuous as vol
 from bboxpy import Bbox
 from bboxpy.exceptions import HttpRequestError
-
 from homeassistant import config_entries
 from homeassistant.data_entry_flow import FlowResult
 from homeassistant.exceptions import HomeAssistantError

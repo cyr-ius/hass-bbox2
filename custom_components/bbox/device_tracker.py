@@ -2,6 +2,7 @@
 from __future__ import annotations
 
 import logging
+from typing import Any
 
 from homeassistant.components.device_tracker import SourceType
 from homeassistant.components.device_tracker.config_entry import ScannerEntity
@@ -11,6 +12,7 @@ from homeassistant.core import HomeAssistant
 from homeassistant.helpers.entity_platform import AddEntitiesCallback
 
 from .const import DOMAIN
+from .coordinator import BboxDataUpdateCoordinator
 from .entity import BboxEntity
 
 _LOGGER = logging.getLogger(__name__)
@@ -41,7 +43,12 @@ class BboxDeviceTracker(BboxEntity, ScannerEntity):
     _attr_has_entity_name = True
     _attr_entity_registry_enabled_default = False
 
-    def __init__(self, coordinator, description, device) -> None:
+    def __init__(
+        self,
+        coordinator: BboxDataUpdateCoordinator,
+        description: SensorEntityDescription,
+        device: dict[str, Any],
+    ) -> None:
         """Initialize."""
         super().__init__(coordinator, description)
         self._device = device

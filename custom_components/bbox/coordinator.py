@@ -3,9 +3,9 @@ from __future__ import annotations
 
 import logging
 from datetime import timedelta
+from typing import Any
 
 from bboxpy import Bbox
-
 from homeassistant.core import HomeAssistant
 from homeassistant.helpers.aiohttp_client import async_create_clientsession
 from homeassistant.helpers.update_coordinator import DataUpdateCoordinator, UpdateFailed
@@ -34,7 +34,7 @@ class BboxDataUpdateCoordinator(DataUpdateCoordinator):
             session=async_create_clientsession(self.hass),
         )
 
-    async def _async_update_data(self) -> dict:
+    async def _async_update_data(self) -> dict[str, dict[str, Any]]:
         """Fetch datas."""
         try:
             bbox_info = self.check_list(await self.bbox.device.async_get_bbox_info())
@@ -61,7 +61,7 @@ class BboxDataUpdateCoordinator(DataUpdateCoordinator):
             raise UpdateFailed from error
 
     @staticmethod
-    def check_list(obj):
+    def check_list(obj: dict[str, dict[str, Any]]) -> dict[str, Any]:
         """Return element if one only."""
         if isinstance(obj, list) and len(obj) == 1:
             return obj[0]
