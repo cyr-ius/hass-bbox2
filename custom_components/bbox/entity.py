@@ -3,7 +3,7 @@ from __future__ import annotations
 
 import logging
 
-from homeassistant.helpers.entity import Entity
+from homeassistant.helpers.entity import Entity, EntityDescription
 from homeassistant.helpers.update_coordinator import CoordinatorEntity
 
 from .const import BBOX_NAME, CONF_HOST, DOMAIN, MANUFACTURER
@@ -18,13 +18,16 @@ class BboxEntity(CoordinatorEntity[BboxDataUpdateCoordinator], Entity):
 
     _attr_has_entity_name = True
 
-    def __init__(self, coordinator: BboxDataUpdateCoordinator, description) -> None:
+    def __init__(
+        self, coordinator: BboxDataUpdateCoordinator, description: EntityDescription
+    ) -> None:
         """Initialize the entity."""
         super().__init__(coordinator)
+        self.entity_description = description
+
         device = finditem(coordinator.data, "info.device")
         self.box_id = device.get("serialnumber", "ABC12345")
         self._attr_unique_id = f"{self.box_id}-{description.key}"
-        self.entity_description = description
         self._attr_device_info = {
             "identifiers": {(DOMAIN, self.box_id)},
             "manufacturer": MANUFACTURER,
