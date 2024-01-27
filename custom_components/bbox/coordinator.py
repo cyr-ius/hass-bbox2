@@ -10,7 +10,7 @@ from homeassistant.core import HomeAssistant
 from homeassistant.helpers.aiohttp_client import async_create_clientsession
 from homeassistant.helpers.update_coordinator import DataUpdateCoordinator, UpdateFailed
 
-from .const import CONF_HOST, CONF_PASSWORD, DOMAIN
+from .const import CONF_HOST, CONF_PASSWORD, CONF_USE_TLS, DOMAIN
 
 _LOGGER = logging.getLogger(__name__)
 SCAN_INTERVAL = 60
@@ -32,6 +32,7 @@ class BboxDataUpdateCoordinator(DataUpdateCoordinator):
             password=entry.data[CONF_PASSWORD],
             hostname=entry.data[CONF_HOST],
             session=async_create_clientsession(self.hass),
+            use_tls=entry.data[CONF_USE_TLS],
         )
 
     async def _async_update_data(self) -> dict[str, dict[str, Any]]:
