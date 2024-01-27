@@ -4,6 +4,7 @@ DOMAIN = "bbox"
 BBOX_URL = "mabbox.bytel.fr"
 CONF_PASSWORD = "password"
 CONF_HOST = "host"
+CONF_USE_TLS = "use_tls"
 TO_REDACT = {
     "username",
     "password",
