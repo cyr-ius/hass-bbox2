@@ -1,6 +1,6 @@
 {
-    "name": "Bouygues Bbox",
-    "country": ["FR"],
-    "homeassistant": "0.110.0",
-    "render_readme": true
+  "name": "Bouygues Bbox",
+  "country": ["FR"],
+  "homeassistant": "0.110.0",
+  "render_readme": true
 }
