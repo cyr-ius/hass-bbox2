@@ -1,8 +1,9 @@
+---
 name: Create release
 on:
   push:
     tags:
-      - "[0-9]+.[0-9]+.[0-9]+" # Push events to matching i.e. 1.0.0, 4.0.1
+      - "*.*.*"
 jobs:
   release:
     runs-on: ubuntu-latest
@@ -10,11 +11,11 @@ jobs:
       contents: write
     steps:
       - name: Checkout
-        uses: actions/checkout@v4
+        uses: actions/checkout@v3
 
       - name: Generate changelog
         id: changelog
-        uses: metcalfc/changelog-generator@v4.3.1
+        uses: metcalfc/changelog-generator@v4.1.0
         with:
           mytoken: ${{ secrets.GITHUB_TOKEN }}
 
@@ -28,4 +29,4 @@ jobs:
           release_name: ${{ github.ref }}
           body: ${{ steps.changelog.outputs.changelog }}
           draft: false
-          prerelease: false
+          prerelease: ${{ contains(github.ref_name,'-') }}
