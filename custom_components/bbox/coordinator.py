@@ -1,11 +1,13 @@
 """Corddinator for Bbox."""
+
 from __future__ import annotations
 
-import logging
 from datetime import timedelta
+import logging
 from typing import Any
 
 from bboxpy import Bbox
+
 from homeassistant.core import HomeAssistant
 from homeassistant.helpers.aiohttp_client import async_create_clientsession
 from homeassistant.helpers.update_coordinator import DataUpdateCoordinator, UpdateFailed
@@ -17,7 +19,7 @@ SCAN_INTERVAL = 60
 
 
 class BboxDataUpdateCoordinator(DataUpdateCoordinator):
-    """Define an object to fetch datas."""
+    """Define an object to fetch data."""
 
     def __init__(
         self,
@@ -36,7 +38,7 @@ class BboxDataUpdateCoordinator(DataUpdateCoordinator):
         )
 
     async def _async_update_data(self) -> dict[str, dict[str, Any]]:
-        """Fetch datas."""
+        """Fetch data."""
         try:
             bbox_info = self.check_list(await self.bbox.device.async_get_bbox_info())
             devices = self.check_list(await self.bbox.lan.async_get_connected_devices())
@@ -46,27 +48,27 @@ class BboxDataUpdateCoordinator(DataUpdateCoordinator):
             # lan_stats = self.check_list(await self.bbox.lan.async_get_lan_stats())
             # voicemail = self.check_list(await self.bbox.voip.async_get_voip_voicemail())
             # device_info = self.check_list(await self.bbox.lan.async_get_device_infos())
-
-            return {
-                "info": bbox_info,
-                "devices": devices,
-                "wan_ip_stats": wan_ip_stats,
-                # "wan": wan,
-                # "iptv_channels_infos": iptv_channels_infos,
-                # "lan_stats": lan_stats,
-                # "voicemail": voicemail,
-                # "device_info": device_info,
-            }
         except Exception as error:
             _LOGGER.error(error)
             raise UpdateFailed from error
+
+        return {
+            "info": bbox_info,
+            "devices": devices,
+            "wan_ip_stats": wan_ip_stats,
+            # "wan": wan,
+            # "iptv_channels_infos": iptv_channels_infos,
+            # "lan_stats": lan_stats,
+            # "voicemail": voicemail,
+            # "device_info": device_info,
+        }
 
     @staticmethod
     def check_list(obj: dict[str, dict[str, Any]]) -> dict[str, Any]:
         """Return element if one only."""
         if isinstance(obj, list) and len(obj) == 1:
             return obj[0]
-        else:
-            raise UpdateFailed(
-                "The call is not a list or it contains more than one element"
-            )
+
+        raise UpdateFailed(
+            "The call is not a list or it contains more than one element"
+        )
