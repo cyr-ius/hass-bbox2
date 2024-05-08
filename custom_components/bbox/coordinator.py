@@ -64,7 +64,7 @@ class BboxDataUpdateCoordinator(DataUpdateCoordinator):
         }
 
     @staticmethod
-    def check_list(obj: dict[str, dict[str, Any]]) -> dict[str, Any]:
+    def check_list(obj: Any) -> dict[str, Any]:
         """Return element if one only."""
         if isinstance(obj, list) and len(obj) == 1:
             return obj[0]
