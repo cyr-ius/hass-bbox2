@@ -1,13 +1,14 @@
 """Button for Bbox router."""
+
 import logging
 
 from bboxpy.exceptions import BboxException
+
 from homeassistant.components.button import ButtonEntity, ButtonEntityDescription
-from homeassistant.config_entries import ConfigEntry
 from homeassistant.core import HomeAssistant
 from homeassistant.helpers.entity_platform import AddEntitiesCallback
 
-from .const import DOMAIN
+from . import BBoxConfigEntry
 from .entity import BboxEntity
 
 _LOGGER = logging.getLogger(__name__)
@@ -18,10 +19,10 @@ BUTTON_RESTART: tuple[ButtonEntityDescription, ...] = ButtonEntityDescription(
 
 
 async def async_setup_entry(
-    hass: HomeAssistant, entry: ConfigEntry, async_add_entities: AddEntitiesCallback
+    hass: HomeAssistant, entry: BBoxConfigEntry, async_add_entities: AddEntitiesCallback
 ) -> None:
     """Set up sensor."""
-    coordinator = hass.data[DOMAIN][entry.entry_id]
+    coordinator = entry.runtime_data
     entities = [RestartButton(coordinator, BUTTON_RESTART)]
     async_add_entities(entities)
 

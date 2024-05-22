@@ -1,4 +1,5 @@
 """Support for Bbox sensors."""
+
 from __future__ import annotations
 
 import logging
@@ -8,12 +9,11 @@ from homeassistant.components.sensor import (
     SensorEntity,
     SensorStateClass,
 )
-from homeassistant.config_entries import ConfigEntry
 from homeassistant.const import PERCENTAGE, UnitOfDataRate, UnitOfTemperature
 from homeassistant.core import HomeAssistant
 from homeassistant.helpers.entity_platform import AddEntitiesCallback
 
-from .const import DOMAIN
+from . import BBoxConfigEntry
 from .entity import BboxEntity
 from .helpers import BboxSensorDescription, finditem
 
@@ -88,10 +88,10 @@ SENSOR_TYPES: tuple[BboxSensorDescription, ...] = (
 
 
 async def async_setup_entry(
-    hass: HomeAssistant, entry: ConfigEntry, async_add_entities: AddEntitiesCallback
+    hass: HomeAssistant, entry: BBoxConfigEntry, async_add_entities: AddEntitiesCallback
 ) -> None:
     """Set up sensor."""
-    coordinator = hass.data[DOMAIN][entry.entry_id]
+    coordinator = entry.runtime_data
     entities = [BboxSensor(coordinator, description) for description in SENSOR_TYPES]
     async_add_entities(entities)
 
