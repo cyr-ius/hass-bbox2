@@ -1,13 +1,15 @@
 """Config flow for Bouygues Bbox integration."""
+
 from __future__ import annotations
 
-import logging
 from collections.abc import Mapping
+import logging
 from typing import Any
 
-import voluptuous as vol
 from bboxpy import Bbox
 from bboxpy.exceptions import BboxException, HttpRequestError
+import voluptuous as vol
+
 from homeassistant import config_entries
 from homeassistant.data_entry_flow import FlowResult
 from homeassistant.exceptions import HomeAssistantError
