@@ -34,7 +34,7 @@ class BboxDataUpdateCoordinator(DataUpdateCoordinator):
             password=entry.data[CONF_PASSWORD],
             hostname=entry.data[CONF_HOST],
             session=async_create_clientsession(self.hass),
-            use_tls=entry.data[CONF_USE_TLS],
+            use_tls=entry.data.get(CONF_USE_TLS, False),
         )
 
     async def _async_update_data(self) -> dict[str, dict[str, Any]]:
