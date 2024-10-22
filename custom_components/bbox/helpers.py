@@ -15,6 +15,7 @@ from homeassistant.helpers.typing import StateType
 class BboxSensorDescription(SensorEntityDescription):
     """Describes a sensor."""
 
+    get_value: Callable[..., Any] | None = None
     value_fn: Callable[..., StateType] | None = None
 
 

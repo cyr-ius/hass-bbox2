@@ -41,7 +41,8 @@ class BboxDataUpdateCoordinator(DataUpdateCoordinator):
         """Fetch data."""
         try:
             bbox_info = self.check_list(await self.bbox.device.async_get_bbox_info())
-            devices = self.check_list(await self.bbox.lan.async_get_connected_devices())
+            devices = await self.bbox.lan.async_get_connected_devices()
+            assert isinstance(devices, list), f"Failed to retrieved devices from Bbox API: {devices}"
             wan_ip_stats = self.check_list(await self.bbox.wan.async_get_wan_ip_stats())
             # wan = self.check_list(await self.bbox.wan.async_get_wan_ip())
             # iptv_channels_infos = self.check_list(await self.bbox.iptv.async_get_iptv_info())
@@ -54,7 +55,7 @@ class BboxDataUpdateCoordinator(DataUpdateCoordinator):
 
         return {
             "info": bbox_info,
-            "devices": devices,
+            "devices": self.merge_objects(devices),
             "wan_ip_stats": wan_ip_stats,
             # "wan": wan,
             # "iptv_channels_infos": iptv_channels_infos,
@@ -64,11 +65,37 @@ class BboxDataUpdateCoordinator(DataUpdateCoordinator):
         }
 
     @staticmethod
+    def merge_objects(objs: Any) -> dict[str, Any]:
+        """Merge objects return by the Bbox API"""
+        assert isinstance(objs, list)
+        def merge(a: dict, b: dict, path=[]):
+            for key in b:
+                if key in a:
+                    if isinstance(a[key], dict) and isinstance(b[key], dict):
+                        merge(a[key], b[key], path + [str(key)])
+                    elif isinstance(a[key], list) and isinstance(b[key], list):
+                        a[key].extend(b[key])
+                    elif a[key] != b[key]:
+                        raise ValueError(
+                            f"Conflict merging the key {'.'.join(path + [str(key)])} of the "
+                            "objects return by the Bbox API: "
+                            f"'{a[key]}' ({type(a[key])}) != '{b[key]}' ({type(b[key])})"
+                        )
+                else:
+                    a[key] = b[key]
+            return a
+        result = objs[0]
+        assert isinstance(result, dict), f"The first element of the list is not a dict (but {type(result)}): {result}"
+        for idx, obj in enumerate(objs[1:]):
+            assert isinstance(obj, dict), f"The {idx+2} element of the list is not a dict (but {type(obj)}): {obj}"
+            result = merge(result, obj)
+        return result
+
+    @staticmethod
     def check_list(obj: Any) -> dict[str, Any]:
         """Return element if one only."""
-        if isinstance(obj, list) and len(obj) == 1:
-            return obj[0]
-
-        raise UpdateFailed(
-            "The call is not a list or it contains more than one element"
-        )
+        if not isinstance(obj, list):
+            raise UpdateFailed(f"The call is not a list ({type(obj)}): {obj}")
+        if len(obj) != 1:
+            raise UpdateFailed(f"The call contains more than one element ({len(obj)}): {obj}")
+        return obj[0]
