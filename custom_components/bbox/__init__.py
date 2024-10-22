@@ -15,6 +15,7 @@ PLATFORMS: list[Platform] = [
     Platform.BINARY_SENSOR,
     Platform.DEVICE_TRACKER,
     Platform.BUTTON,
+    Platform.SWITCH,
 ]
 
 
