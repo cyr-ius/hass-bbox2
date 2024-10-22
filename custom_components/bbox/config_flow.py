@@ -48,8 +48,12 @@ class ConfigFlow(config_entries.ConfigFlow, domain=DOMAIN):
                 )
                 await api.async_login()
                 infos = await api.device.async_get_bbox_summary()
-                if sn := infos.get("device", {}).get("serialnumber") is None:
-                    raise CannotConnect("Serial number of device not found")
+
+                try:
+                    sn = infos[0]["device"]["serialnumber"]
+                    assert sn is not None, "Null Bbox serial number retrieved"
+                except (IndexError, KeyError, AssertionError) as err:
+                    raise CannotConnect("Serial number of device not found") from err
 
                 await self.async_set_unique_id(sn)
                 self._abort_if_unique_id_configured()
