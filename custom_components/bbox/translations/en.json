@@ -5,16 +5,37 @@
         "title": "Bouygue Bbox registration",
         "data": {
           "host": "Host",
-          "password": "Password"
+          "password": "Password",
+          "use_tls": "Use TLS",
+          "refresh_rate": "Refresh rate (in seconds)"
         }
       }
     },
     "error": {
       "cannot_connect": "Failed to connect",
-      "invalid_auth": "Invalid authentication"
+      "invalid_auth": "Invalid authentication",
+      "serialnumber": "Failed to retrieve Bbox serialnumber via its API"
     },
     "abort": {
       "already_configured": "Your account is already configured."
+    }
+  },
+  "options": {
+    "step": {
+      "init": {
+        "description": "Please reconfigure the connection with your Bbox.",
+        "data": {
+          "host": "Host",
+          "password": "Password",
+          "use_tls": "Use TLS",
+          "refresh_rate": "Refresh rate (in seconds)"
+        }
+      }
+    },
+    "error": {
+      "cannot_connect": "Failed to connect",
+      "invalid_auth": "Invalid authentication",
+      "serialnumber": "Failed to retrieve Bbox serialnumber via its API"
     }
   }
 }
