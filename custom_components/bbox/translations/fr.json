@@ -4,17 +4,38 @@
       "user": {
         "title": "Enregistrement Bouygue Bbox",
         "data": {
-          "host": "Url",
-          "password": "Mot de passe"
+          "host": "URL",
+          "password": "Mot de passe",
+          "use_tls": "Utiliser TLS",
+          "refresh_rate": "Fréquence de rafraîchissement (en secondes)"
         }
       }
     },
     "error": {
       "cannot_connect": "Impossible de se connecter",
-      "invalid_auth": "Authentification incorrect"
+      "invalid_auth": "Authentification incorrect",
+      "serialnumber": "Impossible de récupérer le numéro de série de la Bbox via son API"
     },
     "abort": {
       "already_configured": "Votre équipement est déjà configuré."
+    }
+  },
+  "options": {
+    "step": {
+      "init": {
+        "description": "Merci de reconfigurer la connexion à votre  Bbox.",
+        "data": {
+          "host": "URL",
+          "password": "Mot de passe",
+          "use_tls": "Utiliser TLS",
+          "refresh_rate": "Fréquence de rafraîchissement (en secondes)"
+        }
+      }
+    },
+    "error": {
+      "cannot_connect": "Failed to connect",
+      "invalid_auth": "Invalid authentication",
+      "serialnumber": "Failed to retrieve Bbox serialnumber via its API"
     }
   }
 }
