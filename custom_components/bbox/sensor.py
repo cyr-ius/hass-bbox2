@@ -9,7 +9,7 @@ from homeassistant.components.sensor import (
     SensorEntity,
     SensorStateClass,
 )
-from homeassistant.const import PERCENTAGE, UnitOfDataRate, UnitOfTemperature
+from homeassistant.const import UnitOfDataRate, UnitOfInformation, UnitOfTemperature, PERCENTAGE
 from homeassistant.core import HomeAssistant
 from homeassistant.helpers.entity_platform import AddEntitiesCallback
 
@@ -30,11 +30,11 @@ SENSOR_TYPES: tuple[BboxSensorDescription, ...] = (
     ),
     BboxSensorDescription(
         key="wan_ip_stats.wan.ip.stats.rx.bytes",
-        name="Download speed",
-        device_class=SensorDeviceClass.DATA_RATE,
-        native_unit_of_measurement=UnitOfDataRate.KILOBYTES_PER_SECOND,
+        name="Downloaded",
+        device_class=SensorDeviceClass.DATA_SIZE,
+        native_unit_of_measurement=UnitOfInformation.KILOBITS,
         icon="mdi:download-network",
-        value_fn=lambda x: round(x / 1000000, 2),
+        value_fn=lambda x: round(float(x) / 1000, 2),
         state_class=SensorStateClass.MEASUREMENT,
     ),
     BboxSensorDescription(
@@ -48,21 +48,33 @@ SENSOR_TYPES: tuple[BboxSensorDescription, ...] = (
         icon="mdi:upload-network",
     ),
     BboxSensorDescription(
-        key="wan_ip_stats.wan.ip.stats.rx.occupation",
-        name="Download bandwidth occupation (%)",
+        key="wan_ip_stats.wan.ip.stats.rx.bandwidth",
+        name="Download speed",
         device_class=SensorDeviceClass.DATA_RATE,
         icon="mdi:upload-network",
         value_fn=lambda x: float(x),
+        native_unit_of_measurement=UnitOfDataRate.KILOBITS_PER_SECOND,
+        state_class=SensorStateClass.MEASUREMENT,
+    ),
+    BboxSensorDescription(
+        key="wan_ip_stats.wan.ip.stats.rx.occupation",
+        name="Download bandwidth occupation",
+        device_class=SensorDeviceClass.POWER_FACTOR,
+        icon="mdi:upload-network",
+        get_value=lambda self: (
+            float(finditem(self.coordinator.data, "wan_ip_stats.wan.ip.stats.rx.bandwidth")) * 100 /
+            float(finditem(self.coordinator.data, "wan_ip_stats.wan.ip.stats.rx.maxBandwidth"))
+        ),
         native_unit_of_measurement=PERCENTAGE,
         state_class=SensorStateClass.MEASUREMENT,
     ),
     BboxSensorDescription(
         key="wan_ip_stats.wan.ip.stats.tx.bytes",
-        name="Upload speed",
-        device_class=SensorDeviceClass.DATA_RATE,
-        native_unit_of_measurement=UnitOfDataRate.KILOBYTES_PER_SECOND,
+        name="Uploaded",
+        device_class=SensorDeviceClass.DATA_SIZE,
+        native_unit_of_measurement=UnitOfInformation.KILOBITS,
         icon="mdi:upload-network",
-        value_fn=lambda x: round(x / 1000000, 2),
+        value_fn=lambda x: round(float(x) / 1000, 2),
         state_class=SensorStateClass.MEASUREMENT,
     ),
     BboxSensorDescription(
@@ -76,11 +88,23 @@ SENSOR_TYPES: tuple[BboxSensorDescription, ...] = (
         icon="mdi:upload-network",
     ),
     BboxSensorDescription(
-        key="wan_ip_stats.wan.ip.stats.tx.occupation",
-        name="Upload bandwidth occupation (%)",
+        key="wan_ip_stats.wan.ip.stats.tx.bandwidth",
+        name="Upload speed",
         device_class=SensorDeviceClass.DATA_RATE,
         icon="mdi:upload-network",
         value_fn=lambda x: float(x),
+        native_unit_of_measurement=UnitOfDataRate.KILOBITS_PER_SECOND,
+        state_class=SensorStateClass.MEASUREMENT,
+    ),
+    BboxSensorDescription(
+        key="wan_ip_stats.wan.ip.stats.tx.occupation",
+        name="Upload bandwidth occupation",
+        device_class=SensorDeviceClass.POWER_FACTOR,
+        icon="mdi:upload-network",
+        get_value=lambda self: (
+            float(finditem(self.coordinator.data, "wan_ip_stats.wan.ip.stats.tx.bandwidth")) * 100 /
+            float(finditem(self.coordinator.data, "wan_ip_stats.wan.ip.stats.tx.maxBandwidth"))
+        ),
         native_unit_of_measurement=PERCENTAGE,
         state_class=SensorStateClass.MEASUREMENT,
     ),
@@ -102,7 +126,13 @@ class BboxSensor(BboxEntity, SensorEntity):
     @property
     def native_value(self):
         """Return sensor state."""
-        data = finditem(self.coordinator.data, self.entity_description.key)
-        if self.entity_description.value_fn is not None:
-            return self.entity_description.value_fn(data)
-        return data
+        raw_value = (
+            self.entity_description.get_value(self)
+            if self.entity_description.get_value is not None
+            else finditem(self.coordinator.data, self.entity_description.key)
+        )
+        return (
+            self.entity_description.value_fn(raw_value)
+            if self.entity_description.value_fn is not None
+            else raw_value
+        )
