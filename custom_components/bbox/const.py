@@ -1,11 +1,11 @@
 """Constants for the Bouygues Bbox integration."""
 
+from homeassistant.const import CONF_HOST
+
 DOMAIN = "bbox"
 BBOX_NAME = "Bbox"
 MANUFACTURER = "Bouygues"
 DEFAULT_TITLE = f"{MANUFACTURER} {BBOX_NAME}"
-CONF_PASSWORD = "password"
-CONF_HOST = "host"
 CONF_USE_TLS = "use_tls"
 CONF_REFRESH_RATE = "refresh_rate"
 
