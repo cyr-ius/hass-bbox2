@@ -22,6 +22,8 @@ PLATFORMS: list[Platform] = [
 async def async_setup_entry(hass: HomeAssistant, entry: BBoxConfigEntry) -> bool:
     """Set up Bouygues Bbox from a config entry."""
     coordinator = BboxDataUpdateCoordinator(hass, entry)
+    await coordinator.connect()
+    entry.async_on_unload(entry.add_update_listener(coordinator.update_configuration))
     await coordinator.async_config_entry_first_refresh()
     entry.runtime_data = coordinator
 

@@ -12,10 +12,9 @@ from homeassistant.core import HomeAssistant
 from homeassistant.helpers.aiohttp_client import async_create_clientsession
 from homeassistant.helpers.update_coordinator import DataUpdateCoordinator, UpdateFailed
 
-from .const import CONF_HOST, CONF_PASSWORD, CONF_USE_TLS, DOMAIN
+from .const import CONF_DEFAULTS, CONF_HOST, CONF_PASSWORD, CONF_USE_TLS, DOMAIN, CONF_REFRESH_RATE
 
 _LOGGER = logging.getLogger(__name__)
-SCAN_INTERVAL = 60
 
 
 class BboxDataUpdateCoordinator(DataUpdateCoordinator):
@@ -28,14 +27,34 @@ class BboxDataUpdateCoordinator(DataUpdateCoordinator):
     ) -> None:
         """Class to manage fetching data API."""
         super().__init__(
-            hass, _LOGGER, name=DOMAIN, update_interval=timedelta(seconds=SCAN_INTERVAL)
+            hass, _LOGGER, name=DOMAIN,
+            update_interval=timedelta(
+                seconds=entry.data.get(CONF_REFRESH_RATE, CONF_DEFAULTS[CONF_REFRESH_RATE])
+            )
         )
+        self.entry = entry
+
+    async def connect(self):
+        """Start Bbox connection"""
         self.bbox = Bbox(
-            password=entry.data[CONF_PASSWORD],
-            hostname=entry.data[CONF_HOST],
+            password=self.entry.data[CONF_PASSWORD],
+            hostname=self.entry.data[CONF_HOST],
             session=async_create_clientsession(self.hass),
-            use_tls=entry.data.get(CONF_USE_TLS, False),
+            use_tls=self.entry.data.get(CONF_USE_TLS, False),
         )
+
+    async def update_configuration(self, hass, entry):
+        """Update configuration"""
+        self.entry = entry
+        await self.connect()
+
+        self.update_interval = timedelta(
+            seconds=entry.data[CONF_REFRESH_RATE]
+        )
+        _LOGGER.debug("Coordinator refresh interval updated (%s)", self.update_interval)
+
+        _LOGGER.debug("Force update")
+        await self.async_refresh()
 
     async def _async_update_data(self) -> dict[str, dict[str, Any]]:
         """Fetch data."""
