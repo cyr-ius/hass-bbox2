@@ -2,13 +2,12 @@
 
 from __future__ import annotations
 
-from collections.abc import Mapping
 import logging
+from collections.abc import Mapping
 from typing import Any
 
-from bboxpy import AuthorizationError, Bbox, BboxException, HttpRequestError
 import voluptuous as vol
-
+from bboxpy import AuthorizationError, Bbox, BboxException, HttpRequestError
 from homeassistant import config_entries
 from homeassistant.const import CONF_HOST, CONF_PASSWORD, CONF_VERIFY_SSL
 from homeassistant.core import callback
@@ -35,10 +34,6 @@ SCHEMA = vol.Schema(
         vol.Required(CONF_USE_TLS, default=DEFAULT_USE_TLS): bool,
         vol.Required(CONF_VERIFY_SSL, default=DEFAULT_VERIFY_SSL): bool,
     }
-)
-
-OPTIONS_SCHEMA = vol.Schema(
-    {vol.Optional(CONF_REFRESH_RATE, default=DEFAULT_REFRESH_RATE): int}
 )
 
 
@@ -145,12 +140,15 @@ class OptionsFlow(config_entries.OptionsFlow):
         self, user_input: Mapping[str, Any] | None = None
     ) -> FlowResult:
         """Manage the options."""
-        if user_input is not None:
+        if user_input:
             return self.async_create_entry(data=user_input)
 
         return self.async_show_form(
             step_id="init",
             data_schema=self.add_suggested_values_to_schema(
-                OPTIONS_SCHEMA, self.config_entry.data
+                vol.Schema(
+                    {vol.Optional(CONF_REFRESH_RATE, default=DEFAULT_REFRESH_RATE): int}
+                ),
+                self.config_entry.options,
             ),
         )
