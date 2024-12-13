@@ -44,6 +44,7 @@ class BboxDataUpdateCoordinator(DataUpdateCoordinator):
             devices = await self.bbox.lan.async_get_connected_devices()
             assert isinstance(devices, list), f"Failed to retrieved devices from Bbox API: {devices}"
             wan_ip_stats = self.check_list(await self.bbox.wan.async_get_wan_ip_stats())
+            parentalcontrol = self.check_list(await self.bbox.parentalcontrol.async_get_parental_control_service_state())
             # wan = self.check_list(await self.bbox.wan.async_get_wan_ip())
             # iptv_channels_infos = self.check_list(await self.bbox.iptv.async_get_iptv_info())
             # lan_stats = self.check_list(await self.bbox.lan.async_get_lan_stats())
@@ -57,6 +58,7 @@ class BboxDataUpdateCoordinator(DataUpdateCoordinator):
             "info": bbox_info,
             "devices": self.merge_objects(devices),
             "wan_ip_stats": wan_ip_stats,
+            "parentalcontrol": parentalcontrol,
             # "wan": wan,
             # "iptv_channels_infos": iptv_channels_infos,
             # "lan_stats": lan_stats,
