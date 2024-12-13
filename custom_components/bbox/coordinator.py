@@ -42,9 +42,13 @@ class BboxDataUpdateCoordinator(DataUpdateCoordinator):
         try:
             bbox_info = self.check_list(await self.bbox.device.async_get_bbox_info())
             devices = await self.bbox.lan.async_get_connected_devices()
-            assert isinstance(devices, list), f"Failed to retrieved devices from Bbox API: {devices}"
+            assert isinstance(
+                devices, list
+            ), f"Failed to retrieved devices from Bbox API: {devices}"
             wan_ip_stats = self.check_list(await self.bbox.wan.async_get_wan_ip_stats())
-            parentalcontrol = self.check_list(await self.bbox.parentalcontrol.async_get_parental_control_service_state())
+            parentalcontrol = self.check_list(
+                await self.bbox.parentalcontrol.async_get_parental_control_service_state()
+            )
             # wan = self.check_list(await self.bbox.wan.async_get_wan_ip())
             # iptv_channels_infos = self.check_list(await self.bbox.iptv.async_get_iptv_info())
             # lan_stats = self.check_list(await self.bbox.lan.async_get_lan_stats())
@@ -70,6 +74,7 @@ class BboxDataUpdateCoordinator(DataUpdateCoordinator):
     def merge_objects(objs: Any) -> dict[str, Any]:
         """Merge objects return by the Bbox API"""
         assert isinstance(objs, list)
+
         def merge(a: dict, b: dict, path=[]):
             for key in b:
                 if key in a:
@@ -86,10 +91,15 @@ class BboxDataUpdateCoordinator(DataUpdateCoordinator):
                 else:
                     a[key] = b[key]
             return a
+
         result = objs[0]
-        assert isinstance(result, dict), f"The first element of the list is not a dict (but {type(result)}): {result}"
+        assert isinstance(
+            result, dict
+        ), f"The first element of the list is not a dict (but {type(result)}): {result}"
         for idx, obj in enumerate(objs[1:]):
-            assert isinstance(obj, dict), f"The {idx+2} element of the list is not a dict (but {type(obj)}): {obj}"
+            assert isinstance(
+                obj, dict
+            ), f"The {idx+2} element of the list is not a dict (but {type(obj)}): {obj}"
             result = merge(result, obj)
         return result
 
@@ -99,5 +109,7 @@ class BboxDataUpdateCoordinator(DataUpdateCoordinator):
         if not isinstance(obj, list):
             raise UpdateFailed(f"The call is not a list ({type(obj)}): {obj}")
         if len(obj) != 1:
-            raise UpdateFailed(f"The call contains more than one element ({len(obj)}): {obj}")
+            raise UpdateFailed(
+                f"The call contains more than one element ({len(obj)}): {obj}"
+            )
         return obj[0]
