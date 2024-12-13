@@ -6,14 +6,12 @@ from collections.abc import Mapping
 import logging
 from typing import Any
 
-from bboxpy import Bbox
-from bboxpy.exceptions import BboxException, HttpRequestError
+from bboxpy import AuthorizationError, Bbox, BboxException, HttpRequestError
 import voluptuous as vol
 
 from homeassistant import config_entries
 from homeassistant.core import callback
 from homeassistant.data_entry_flow import FlowResult
-from homeassistant.exceptions import HomeAssistantError
 from homeassistant.helpers.aiohttp_client import async_create_clientsession
 
 from .const import (
@@ -48,13 +46,12 @@ class BaseConfigFlow:
             infos = await api.device.async_get_bbox_summary()
 
             try:
-                serialnumber = infos[0]["device"]["serialnumber"]
-                assert serialnumber is not None, "Null Bbox serial number retrieved"
-                return serialnumber
-            except (IndexError, KeyError, AssertionError):
-                self._errors["base"] = "serialnumber"
+                if len(infos) > 0:
+                    serialnumber = infos[0]["device"]["serialnumber"]
+                    return serialnumber             
+              raise HttpRequestError("Serial number of device not found")
 
-        except (HttpRequestError, CannotConnect) as err:
+        except HttpRequestError as err:
             _LOGGER.warning("Can not to connect at Bbox: %s", err)
             self._errors["base"] = "cannot_connect"
         except InvalidAuth as err:
@@ -88,6 +85,14 @@ class ConfigFlow(BaseConfigFlow, config_entries.ConfigFlow, domain=DOMAIN):
 
     VERSION = 1
 
+    @staticmethod
+    @callback
+    def async_get_options_flow(
+        config_entry: config_entries.ConfigEntry,
+    ) -> config_entries.OptionsFlow:
+        """Create the options flow."""
+        return OptionsFlow(config_entry)   
+    
     async def async_step_user(
         self, user_input: Mapping[str, Any] | None = None
     ) -> FlowResult:
@@ -105,15 +110,6 @@ class ConfigFlow(BaseConfigFlow, config_entries.ConfigFlow, domain=DOMAIN):
             data_schema=self._get_config_schema(),
             errors=self._errors
         )
-
-    @staticmethod
-    @callback
-    def async_get_options_flow(
-        config_entry: config_entries.ConfigEntry,
-    ) -> config_entries.OptionsFlow:
-        """Create the options flow."""
-        return OptionsFlow(config_entry)
-
 
 class OptionsFlow(BaseConfigFlow, config_entries.OptionsFlow):
     """Handle a options flow for Bouygues Bbox."""
@@ -149,11 +145,3 @@ class OptionsFlow(BaseConfigFlow, config_entries.OptionsFlow):
             ),
             errors=self._errors
         )
-
-
-class CannotConnect(HomeAssistantError):
-    """Error to indicate we cannot connect."""
-
-
-class InvalidAuth(HomeAssistantError):
-    """Error to indicate there is invalid auth."""

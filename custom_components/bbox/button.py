@@ -13,17 +13,26 @@ from .entity import BboxEntity
 
 _LOGGER = logging.getLogger(__name__)
 
-BUTTON_RESTART: tuple[ButtonEntityDescription, ...] = ButtonEntityDescription(
-    key="restart", name="Restart", icon="mdi:restart-alert"
-)
-
 
 async def async_setup_entry(
     hass: HomeAssistant, entry: BBoxConfigEntry, async_add_entities: AddEntitiesCallback
 ) -> None:
     """Set up sensor."""
     coordinator = entry.runtime_data
-    entities = [RestartButton(coordinator, BUTTON_RESTART)]
+    entities = [
+        RestartButton(
+            coordinator,
+            ButtonEntityDescription(
+                key="restart", name="Restart", icon="mdi:restart-alert"
+            ),
+        ),
+        RefreshButton(
+            coordinator,
+            ButtonEntityDescription(
+                key="refresh", name="Refresh", icon="mdi:refresh-circle"
+            ),
+        ),
+    ]
     async_add_entities(entities)
 
 
@@ -34,5 +43,16 @@ class RestartButton(BboxEntity, ButtonEntity):
         """Handle the button press."""
         try:
             await self.coordinator.bbox.device.async_reboot()
+        except BboxException as error:
+            _LOGGER.error(error)
+
+
+class RefreshButton(BboxEntity, ButtonEntity):
+    """Representation of a button for refreshing integration data."""
+
+    async def async_press(self) -> None:
+        """Handle the button press."""
+        try:
+            await self.coordinator.async_request_refresh()
         except BboxException as error:
             _LOGGER.error(error)
