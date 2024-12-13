@@ -94,6 +94,49 @@ class ConfigFlow(config_entries.ConfigFlow, domain=DOMAIN):
 
         return self.async_show_form(step_id="user", data_schema=SCHEMA, errors=errors)
 
+    async def async_step_reauth(
+        self, entry_data: Mapping[str, Any]
+    ) -> config_entries.ConfigFlowResult:
+        """Perform reauthentication upon an API authentication error."""
+        self.entry_data = entry_data
+        return await self.async_step_reauth_confirm()
+
+    async def async_step_reauth_confirm(
+        self, user_input: dict[str, Any] | None = None
+    ) -> config_entries.ConfigFlowResult:
+        """Confirm reauthentication dialog."""
+        errors: dict[str, str] = {}
+        if user_input:
+            try:
+                api = Bbox(
+                    hostname=self.entry_data[CONF_HOST],
+                    password=user_input[CONF_PASSWORD],
+                    session=async_create_clientsession(self.hass),
+                    use_tls=self.entry_data[CONF_USE_TLS],
+                    verify_ssl=self.entry_data[CONF_VERIFY_SSL],
+                )
+                await api.async_login()
+            except BboxException:
+                errors["base"] = "cannot_connect"
+            else:
+                infos = await api.device.async_get_bbox_summary()
+                if (
+                    isinstance(infos, list)
+                    and len(infos) > 0
+                    and (sn := infos[0].get("device", {}).get("serialnumber"))
+                ):
+                    await self.async_set_unique_id(sn)
+                    self._abort_if_unique_id_mismatch(reason="wrong_account")
+                    return self.async_update_reload_and_abort(
+                        self._get_reauth_entry(),
+                        data_updates={CONF_PASSWORD: user_input[CONF_PASSWORD]},
+                    )
+        return self.async_show_form(
+            step_id="reauth_confirm",
+            data_schema=vol.Schema({vol.Required(CONF_PASSWORD): str}),
+            errors=errors,
+        )
+
 
 class OptionsFlow(config_entries.OptionsFlow):
     """Handle a options flow for Bouygues Bbox."""

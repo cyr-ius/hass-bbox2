@@ -6,11 +6,12 @@ from datetime import timedelta
 import logging
 from typing import Any
 
-from bboxpy import Bbox
+from bboxpy import AuthorizationError, Bbox
 
 from homeassistant.config_entries import ConfigEntry
 from homeassistant.const import CONF_HOST, CONF_PASSWORD, CONF_VERIFY_SSL
 from homeassistant.core import HomeAssistant
+from homeassistant.exceptions import ConfigEntryAuthFailed
 from homeassistant.helpers.aiohttp_client import async_create_clientsession
 from homeassistant.helpers.update_coordinator import DataUpdateCoordinator, UpdateFailed
 
@@ -40,13 +41,18 @@ class BboxDataUpdateCoordinator(DataUpdateCoordinator):
 
     async def _async_setup(self) -> None:
         """Start Bbox connection."""
-        self.bbox = Bbox(
-            password=self.entry.data[CONF_PASSWORD],
-            hostname=self.entry.data[CONF_HOST],
-            session=async_create_clientsession(self.hass),
-            use_tls=self.entry.data.get(CONF_USE_TLS, False),
-            verify_ssl=self.entry.data.get(CONF_VERIFY_SSL, False),
-        )
+        try:
+            self.bbox = Bbox(
+                password=self.entry.data[CONF_PASSWORD],
+                hostname=self.entry.data[CONF_HOST],
+                session=async_create_clientsession(self.hass),
+                use_tls=self.entry.data.get(CONF_USE_TLS, False),
+                verify_ssl=self.entry.data.get(CONF_VERIFY_SSL, False),
+            )
+        except AuthorizationError as error:
+            raise ConfigEntryAuthFailed(
+                f"Password expired for {self.entry.data[CONF_HOST]}"
+            ) from error
 
     async def update_configuration(
         self, hass: HomeAssistant, entry: ConfigEntry
