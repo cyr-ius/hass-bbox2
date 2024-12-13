@@ -1,14 +1,16 @@
 """Parent Entity."""
+
 from __future__ import annotations
 
 import logging
 from typing import Any
 
+from homeassistant.const import CONF_HOST
 from homeassistant.helpers import device_registry
 from homeassistant.helpers.entity import Entity, EntityDescription
 from homeassistant.helpers.update_coordinator import CoordinatorEntity
 
-from .const import BBOX_NAME, CONF_HOST, DOMAIN, MANUFACTURER
+from .const import BBOX_NAME, DOMAIN, MANUFACTURER
 from .coordinator import BboxDataUpdateCoordinator
 from .helpers import finditem
 
@@ -39,8 +41,9 @@ class BboxEntity(CoordinatorEntity[BboxDataUpdateCoordinator], Entity):
             "configuration_url": f"https://{coordinator.config_entry.data[CONF_HOST]}",
         }
 
+
 class BboxDeviceEntity(BboxEntity):
-    """Base class for all device's entities connected to the Bbox"""
+    """Base class for all device's entities connected to the Bbox."""
 
     def __init__(
         self,
@@ -61,7 +64,9 @@ class BboxDeviceEntity(BboxEntity):
         self._attr_device_info = {
             "name": self._device_name,
             "identifiers": {(DOMAIN, self._device_key)},
-            "connections": {(device_registry.CONNECTION_NETWORK_MAC, device["macaddress"])},
+            "connections": {
+                (device_registry.CONNECTION_NETWORK_MAC, device["macaddress"])
+            },
             "via_device": (DOMAIN, self.box_id),
         }
 

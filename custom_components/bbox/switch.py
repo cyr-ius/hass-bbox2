@@ -2,7 +2,6 @@
 
 import asyncio
 import logging
-
 from typing import Any
 
 from bboxpy.exceptions import BboxException
@@ -12,7 +11,7 @@ from homeassistant.core import HomeAssistant
 from homeassistant.helpers.entity_platform import AddEntitiesCallback
 
 from . import BBoxConfigEntry, BboxDataUpdateCoordinator
-from .entity import BboxEntity, BboxDeviceEntity
+from .entity import BboxDeviceEntity, BboxEntity
 from .helpers import finditem
 
 _LOGGER = logging.getLogger(__name__)
@@ -27,7 +26,7 @@ async def async_setup_entry(
         key="parental_control",
         translation_key="parental_control",
         name="Parental control",
-        icon="mdi:security"
+        icon="mdi:security",
     )
     devices = coordinator.data.get("devices", {}).get("hosts", {}).get("list", [])
     entities = [
@@ -41,7 +40,7 @@ async def async_setup_entry(
 
 class ParentalControlServiceSwitch(BboxEntity, SwitchEntity):
     """Representation of a switch for Bbox parental control service state."""
-    
+
     waiting_delay_after_toggle = 5
 
     def __init__(
@@ -58,7 +57,10 @@ class ParentalControlServiceSwitch(BboxEntity, SwitchEntity):
     def is_on(self) -> bool:
         """Return true if parental control service is currently enabled."""
         return bool(
-            finditem(self.coordinator.data, "parentalcontrol.parentalcontrol.scheduler.enable")
+            finditem(
+                self.coordinator.data,
+                "parentalcontrol.parentalcontrol.scheduler.enable",
+            )
         )
 
     async def async_turn_on(self, **kwargs) -> None:
@@ -72,7 +74,7 @@ class ParentalControlServiceSwitch(BboxEntity, SwitchEntity):
             return
         _LOGGER.debug(
             "Request sent, we need to wait a bit (%ds) before updating state...",
-            self.waiting_delay_after_toggle
+            self.waiting_delay_after_toggle,
         )
         await asyncio.sleep(self.waiting_delay_after_toggle)
         _LOGGER.debug("Updating state")
@@ -89,7 +91,7 @@ class ParentalControlServiceSwitch(BboxEntity, SwitchEntity):
             return
         _LOGGER.debug(
             "Request sent, we need to wait a bit (%ds) before updating state...",
-            self.waiting_delay_after_toggle
+            self.waiting_delay_after_toggle,
         )
         await asyncio.sleep(self.waiting_delay_after_toggle)
         _LOGGER.debug("Updating state")
@@ -120,8 +122,7 @@ class DeviceParentalControlSwitch(BboxDeviceEntity, SwitchEntity):
         """Turn the switch on."""
         try:
             await self.coordinator.bbox.parentalcontrol.async_set_device_parental_control_state(
-                macaddress= self._device["macaddress"],
-                enable=True
+                macaddress=self._device["macaddress"], enable=True
             )
         except BboxException as error:
             _LOGGER.error(error)
@@ -132,11 +133,9 @@ class DeviceParentalControlSwitch(BboxDeviceEntity, SwitchEntity):
         """Turn the switch off."""
         try:
             await self.coordinator.bbox.parentalcontrol.async_set_device_parental_control_state(
-                macaddress= self._device["macaddress"],
-                enable=False
+                macaddress=self._device["macaddress"], enable=False
             )
         except BboxException as error:
             _LOGGER.error(error)
             return
         await self.coordinator.async_request_refresh()
-        

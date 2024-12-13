@@ -9,7 +9,12 @@ from homeassistant.components.sensor import (
     SensorEntity,
     SensorStateClass,
 )
-from homeassistant.const import UnitOfDataRate, UnitOfInformation, UnitOfTemperature, PERCENTAGE
+from homeassistant.const import (
+    PERCENTAGE,
+    UnitOfDataRate,
+    UnitOfInformation,
+    UnitOfTemperature,
+)
 from homeassistant.core import HomeAssistant
 from homeassistant.helpers.entity_platform import AddEntitiesCallback
 
@@ -62,8 +67,17 @@ SENSOR_TYPES: tuple[BboxSensorDescription, ...] = (
         device_class=SensorDeviceClass.POWER_FACTOR,
         icon="mdi:upload-network",
         get_value=lambda self: (
-            float(finditem(self.coordinator.data, "wan_ip_stats.wan.ip.stats.rx.bandwidth")) * 100 /
-            float(finditem(self.coordinator.data, "wan_ip_stats.wan.ip.stats.rx.maxBandwidth"))
+            float(
+                finditem(
+                    self.coordinator.data, "wan_ip_stats.wan.ip.stats.rx.bandwidth"
+                )
+            )
+            * 100
+            / float(
+                finditem(
+                    self.coordinator.data, "wan_ip_stats.wan.ip.stats.rx.maxBandwidth"
+                )
+            )
         ),
         native_unit_of_measurement=PERCENTAGE,
         state_class=SensorStateClass.MEASUREMENT,
@@ -102,8 +116,17 @@ SENSOR_TYPES: tuple[BboxSensorDescription, ...] = (
         device_class=SensorDeviceClass.POWER_FACTOR,
         icon="mdi:upload-network",
         get_value=lambda self: (
-            float(finditem(self.coordinator.data, "wan_ip_stats.wan.ip.stats.tx.bandwidth")) * 100 /
-            float(finditem(self.coordinator.data, "wan_ip_stats.wan.ip.stats.tx.maxBandwidth"))
+            float(
+                finditem(
+                    self.coordinator.data, "wan_ip_stats.wan.ip.stats.tx.bandwidth"
+                )
+            )
+            * 100
+            / float(
+                finditem(
+                    self.coordinator.data, "wan_ip_stats.wan.ip.stats.tx.maxBandwidth"
+                )
+            )
         ),
         native_unit_of_measurement=PERCENTAGE,
         state_class=SensorStateClass.MEASUREMENT,
