@@ -6,13 +6,11 @@ from collections.abc import Mapping
 import logging
 from typing import Any
 
-from bboxpy import Bbox
-from bboxpy.exceptions import BboxException, HttpRequestError
+from bboxpy import AuthorizationError, Bbox, BboxException, HttpRequestError
 import voluptuous as vol
 
 from homeassistant import config_entries
 from homeassistant.data_entry_flow import FlowResult
-from homeassistant.exceptions import HomeAssistantError
 from homeassistant.helpers.aiohttp_client import async_create_clientsession
 
 from .const import BBOX_URL, CONF_HOST, CONF_PASSWORD, CONF_USE_TLS, DOMAIN
@@ -48,20 +46,23 @@ class ConfigFlow(config_entries.ConfigFlow, domain=DOMAIN):
                 )
                 await api.async_login()
                 infos = await api.device.async_get_bbox_summary()
-                if sn := infos.get("device", {}).get("serialnumber") is None:
-                    raise CannotConnect("Serial number of device not found")
+                if (
+                    len(infos) > 0
+                    and (sn := infos[0].get("device", {}).get("serialnumber")) is None
+                ):
+                    raise HttpRequestError("Serial number of device not found")
 
                 await self.async_set_unique_id(sn)
                 self._abort_if_unique_id_configured()
 
-            except (HttpRequestError, CannotConnect) as err:
+            except HttpRequestError as err:
                 _LOGGER.warning("Can not to connect at Bbox: %s", err)
                 errors["base"] = "cannot_connect"
-            except InvalidAuth as err:
+            except AuthorizationError as err:
                 _LOGGER.warning("Fail to authenticate to the Bbox: %s", err)
                 errors["base"] = "invalid_auth"
-            except BboxException as err:
-                _LOGGER.exception("Unknown error connecting to the Bbox: %s", err)
+            except BboxException:
+                _LOGGER.exception("Unknown error connecting to the Bbox")
                 errors["base"] = "unknown"
             else:
                 return self.async_create_entry(title="Bouygues Bbox", data=user_input)
@@ -69,11 +70,3 @@ class ConfigFlow(config_entries.ConfigFlow, domain=DOMAIN):
         return self.async_show_form(
             step_id="user", data_schema=DATA_SCHEMA, errors=errors
         )
-
-
-class CannotConnect(HomeAssistantError):
-    """Error to indicate we cannot connect."""
-
-
-class InvalidAuth(HomeAssistantError):
-    """Error to indicate there is invalid auth."""
