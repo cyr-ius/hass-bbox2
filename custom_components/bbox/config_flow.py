@@ -50,8 +50,7 @@ class ConfigFlow(config_entries.ConfigFlow, domain=DOMAIN):
                     len(infos) > 0
                     and (sn := infos[0].get("device", {}).get("serialnumber")) is None
                 ):
-                    raise HttpRequestError("Serial number of device not found")
-
+                    raise HttpRequestError("Serial number of device not found") from err
                 await self.async_set_unique_id(sn)
                 self._abort_if_unique_id_configured()
 
