@@ -7,7 +7,7 @@
           "host": "URL",
           "password": "Mot de passe",
           "use_tls": "Utiliser TLS",
-          "refresh_rate": "Fréquence de rafraîchissement (en secondes)"
+          "verify_ssl": "Vérification du certificat"
         }
       }
     },
@@ -25,17 +25,9 @@
       "init": {
         "description": "Merci de reconfigurer la connexion à votre  Bbox.",
         "data": {
-          "host": "URL",
-          "password": "Mot de passe",
-          "use_tls": "Utiliser TLS",
           "refresh_rate": "Fréquence de rafraîchissement (en secondes)"
         }
       }
-    },
-    "error": {
-      "cannot_connect": "Failed to connect",
-      "invalid_auth": "Invalid authentication",
-      "serialnumber": "Failed to retrieve Bbox serialnumber via its API"
     }
   }
 }

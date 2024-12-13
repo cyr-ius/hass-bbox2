@@ -14,7 +14,7 @@ from homeassistant.core import HomeAssistant
 from homeassistant.helpers.aiohttp_client import async_create_clientsession
 from homeassistant.helpers.update_coordinator import DataUpdateCoordinator, UpdateFailed
 
-from .const import CONF_DEFAULTS, CONF_REFRESH_RATE, CONF_USE_TLS, DOMAIN
+from .const import CONF_REFRESH_RATE, CONF_USE_TLS, DEFAULT_REFRESH_RATE, DOMAIN
 
 _LOGGER = logging.getLogger(__name__)
 
@@ -33,9 +33,7 @@ class BboxDataUpdateCoordinator(DataUpdateCoordinator):
             _LOGGER,
             name=DOMAIN,
             update_interval=timedelta(
-                seconds=entry.data.get(
-                    CONF_REFRESH_RATE, CONF_DEFAULTS[CONF_REFRESH_RATE]
-                )
+                seconds=entry.data.get(CONF_REFRESH_RATE, DEFAULT_REFRESH_RATE)
             ),
         )
         self.entry = entry
@@ -50,15 +48,13 @@ class BboxDataUpdateCoordinator(DataUpdateCoordinator):
             verify_ssl=self.entry.data.get(CONF_VERIFY_SSL, False),
         )
 
-    async def update_configuration(self, entry: ConfigEntry) -> None:
+    async def update_configuration(
+        self, hass: HomeAssistant, entry: ConfigEntry
+    ) -> None:
         """Update configuration."""
-        self.entry = entry
-        await self._async_setup()
-
-        self.update_interval = timedelta(seconds=entry.data[CONF_REFRESH_RATE])
+        self.update_interval = timedelta(seconds=entry.options[CONF_REFRESH_RATE])
         _LOGGER.debug("Coordinator refresh interval updated (%s)", self.update_interval)
 
-        _LOGGER.debug("Force update")
         await self.async_refresh()
 
     async def _async_update_data(self) -> dict[str, dict[str, Any]]:
@@ -96,7 +92,7 @@ class BboxDataUpdateCoordinator(DataUpdateCoordinator):
 
     @staticmethod
     def merge_objects(objs: Any) -> dict[str, Any]:
-        """Merge objects return by the Bbox API"""
+        """Merge objects return by the Bbox API."""
         assert isinstance(objs, list)
 
         def merge(a: dict, b: dict, path=[]):
