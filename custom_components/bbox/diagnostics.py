@@ -33,13 +33,26 @@ async def async_get_config_entry_diagnostics(
 
         _datas.update({func.__name__: rslt})
 
+    await diag(coordinator.bbox.device.async_get_bbox_summary)
     await diag(coordinator.bbox.device.async_get_bbox_info)
-    await diag(coordinator.bbox.lan.async_get_connected_devices)
-    await diag(coordinator.bbox.wan.async_get_wan_ip)
+    await diag(coordinator.bbox.ddns.async_get_ddns)
     await diag(coordinator.bbox.iptv.async_get_iptv_info)
-    await diag(coordinator.bbox.lan.async_get_lan_stats)
-    await diag(coordinator.bbox.voip.async_get_voip_voicemail)
+    await diag(coordinator.bbox.lan.async_get_connected_devices)
     await diag(coordinator.bbox.lan.async_get_device_infos)
+    await diag(coordinator.bbox.lan.async_get_lan_stats)
+    await diag(
+        coordinator.bbox.parentalcontrol.async_get_parental_control_service_state
+    )
+    await diag(coordinator.bbox.services.async_get_bbox_services)
+    await diag(coordinator.bbox.voip.async_get_voip_voicemail)
+    await diag(coordinator.bbox.wifi.async_get_wireless)
+    await diag(coordinator.bbox.wifi.async_get_stats_5)
+    await diag(coordinator.bbox.wifi.async_get_stats_24)
+    await diag(coordinator.bbox.wifi.async_get_wps)
+    await diag(coordinator.bbox.wifi.async_get_repeater)
+    await diag(coordinator.bbox.wan.async_get_wan_ip)
+    await diag(coordinator.bbox.wan.async_get_wan_ftth)
+    await diag(coordinator.bbox.wan.async_get_wan_ip_stats)
 
     return {
         "entry": {
