@@ -36,4 +36,11 @@ def finditem(data: dict[str, Any], key_chain: str, default: Any = None) -> Any:
         for key in keys:
             if isinstance(data, dict):
                 data = data.get(key)
+            elif (
+                isinstance(data, list)
+                and len(data) > 0
+                and key.isdigit()
+                and int(key) < len(data)
+            ):
+                data = data[int(key)]
     return default if data is None and default is not None else data
