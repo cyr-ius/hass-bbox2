@@ -2,10 +2,10 @@
 
 import asyncio
 import logging
-from typing import Any
+from dataclasses import dataclass
+from typing import Any, Final
 
 from bboxpy.exceptions import BboxException
-
 from homeassistant.components.switch import SwitchEntity, SwitchEntityDescription
 from homeassistant.core import HomeAssistant
 from homeassistant.helpers.entity_platform import AddEntitiesCallback
@@ -17,88 +17,141 @@ from .helpers import finditem
 _LOGGER = logging.getLogger(__name__)
 
 
+@dataclass(frozen=True)
+class BboxSwitchEntityDescription(SwitchEntityDescription):
+    """Represents an Flow Sensor."""
+
+    state: str | None = None
+    api: str | None = None
+    turn_on: str | None = None
+    turn_off: str | None = None
+
+
+SWITCH_TYPES: Final[tuple[BboxSwitchEntityDescription, ...]] = (
+    BboxSwitchEntityDescription(
+        key="parental_control",
+        translation_key="parental_control",
+        name="Parental control",
+        icon="mdi:security",
+        state="parentalcontrol.parentalcontrol.scheduler.enable",
+        api="parentalcontrol",
+        turn_on="async_set_parental_control_service_state",
+        turn_off="async_set_parental_control_service_state",
+    ),
+    BboxSwitchEntityDescription(
+        key="wps",
+        translation_key="wps",
+        name="Wps",
+        state="wps.wps.enable",
+        api="wps",
+        turn_on="async_on_wps",
+        turn_off="async_off_wps",
+    ),
+    BboxSwitchEntityDescription(
+        key="wifi_24",
+        translation_key="wifi_24",
+        name="Wifi 2.4Ghz",
+        state="wifi.wireless.radio.24.enable",
+        api="wifi",
+        turn_on="async_set_wireless_24_state",
+        turn_off="async_set_wireless_24_state",
+    ),
+    BboxSwitchEntityDescription(
+        key="wifi_5",
+        translation_key="wifi_5",
+        name="Wifi 5Ghz",
+        state="wifi.wireless.radio.5.enable",
+        api="wifi",
+        turn_on="async_set_wireless_5_state",
+        turn_off="async_set_wireless_5_state",
+    ),
+    BboxSwitchEntityDescription(
+        key="wifi_guest",
+        translation_key="wifi_guest",
+        name="Wifi Guest",
+        state="wifi.wireless.radio.guest.enable",
+        api="wifi",
+        turn_on="async_set_wireless_guest_state",
+        turn_off="async_set_wireless_guest_state",
+    ),
+)
+
+SWITCHE_DEVICES = BboxSwitchEntityDescription(
+    key="parental_control",
+    translation_key="parental_control",
+    name="Parental control",
+    state="parentalcontrol.enable",
+    icon="mdi:security",
+    api="parentalcontrol",
+    turn_on="async_set_device_parental_control_state",
+    turn_off="async_set_device_parental_control_state",
+)
+
+
 async def async_setup_entry(
     hass: HomeAssistant, entry: BBoxConfigEntry, async_add_entities: AddEntitiesCallback
 ) -> None:
     """Set up sensor."""
     coordinator = entry.runtime_data
-    description = SwitchEntityDescription(
-        key="parental_control",
-        translation_key="parental_control",
-        name="Parental control",
-        icon="mdi:security",
-    )
+
     devices = coordinator.data.get("devices", {}).get("hosts", {}).get("list", [])
     entities = [
-        DeviceParentalControlSwitch(coordinator, description, device)
+        DeviceParentalControlSwitch(coordinator, SWITCHE_DEVICES, device)
         for device in devices
         if device.get("macaddress")
     ]
-    entities += [ParentalControlServiceSwitch(coordinator, description)]
+    entities += [BboxSwitch(coordinator, description) for description in SWITCH_TYPES]
     async_add_entities(entities)
 
 
-class ParentalControlServiceSwitch(BboxEntity, SwitchEntity):
-    """Representation of a switch for Bbox parental control service state."""
+class BboxSwitch(BboxEntity, SwitchEntity):
+    """Representation of a switch for Bbox."""
 
     waiting_delay_after_toggle = 5
 
     def __init__(
         self,
         coordinator: BboxDataUpdateCoordinator,
-        description: SwitchEntityDescription,
+        description: BboxSwitchEntityDescription,
     ) -> None:
         """Initialize."""
         super().__init__(coordinator, description)
 
-        self._attr_name = "Parental control"
-
     @property
     def is_on(self) -> bool:
-        """Return true if parental control service is currently enabled."""
-        return bool(
-            finditem(
-                self.coordinator.data,
-                "parentalcontrol.parentalcontrol.scheduler.enable",
-            )
-        )
+        """Return state."""
+        return bool(finditem(self.coordinator.data, self.entity_description.state))
 
-    async def async_turn_on(self, **kwargs) -> None:
+    async def async_turn_on(self, **kwargs: Any) -> None:
         """Turn the switch on."""
+        kwargs = kwargs or {"enable": True}
         try:
-            await self.coordinator.bbox.parentalcontrol.async_set_parental_control_service_state(
-                enable=True
-            )
+            await getattr(
+                getattr(self.coordinator.bbox, self.entity_description.api),
+                self.entity_description.turn_on,
+            )(**kwargs)
         except BboxException as error:
             _LOGGER.error(error)
-            return
-        _LOGGER.debug(
-            "Request sent, we need to wait a bit (%ds) before updating state...",
-            self.waiting_delay_after_toggle,
-        )
-        await asyncio.sleep(self.waiting_delay_after_toggle)
-        _LOGGER.debug("Updating state")
-        await self.coordinator.async_request_refresh()
+        else:
+            await asyncio.sleep(self.waiting_delay_after_toggle)
+            await self.coordinator.async_request_refresh()
 
-    async def async_turn_off(self, **kwargs) -> None:
+    async def async_turn_off(self, **kwargs: Any) -> None:
         """Turn the switch off."""
+        kwargs = kwargs or {"enable": False}
         try:
-            await self.coordinator.bbox.parentalcontrol.async_set_parental_control_service_state(
-                enable=False
-            )
+            await getattr(
+                getattr(self.coordinator.bbox, self.entity_description.api),
+                self.entity_description.turn_off,
+            )(**kwargs)
         except BboxException as error:
             _LOGGER.error(error)
-            return
-        _LOGGER.debug(
-            "Request sent, we need to wait a bit (%ds) before updating state...",
-            self.waiting_delay_after_toggle,
-        )
-        await asyncio.sleep(self.waiting_delay_after_toggle)
-        _LOGGER.debug("Updating state")
-        await self.coordinator.async_request_refresh()
+        else:
+            await asyncio.sleep(self.waiting_delay_after_toggle)
+            await self.coordinator.async_request_refresh()
 
 
-class DeviceParentalControlSwitch(BboxDeviceEntity, SwitchEntity):
+class DeviceParentalControlSwitch(BboxDeviceEntity, BboxSwitch):
     """Representation of a switch for device parental control state."""
 
     def __init__(
@@ -110,32 +163,19 @@ class DeviceParentalControlSwitch(BboxDeviceEntity, SwitchEntity):
         """Initialize."""
         super().__init__(coordinator, description, device)
 
-        self._attr_name = "Parental control"
         self._attr_unique_id = f"{self._device_key}_parental_control"
 
     @property
     def is_on(self) -> bool:
         """Return true if device parental control is currently enabled."""
-        return bool(finditem(self.coordinator_data, "parentalcontrol.enable"))
+        return bool(finditem(self._device, self.entity_description.state))
 
-    async def async_turn_on(self, **kwargs) -> None:
+    async def async_turn_on(self, **kwargs: Any) -> None:
         """Turn the switch on."""
-        try:
-            await self.coordinator.bbox.parentalcontrol.async_set_device_parental_control_state(
-                macaddress=self._device["macaddress"], enable=True
-            )
-        except BboxException as error:
-            _LOGGER.error(error)
-            return
-        await self.coordinator.async_request_refresh()
+        await super().async_turn_on(macaddress=self._device["macaddress"], enable=True)
 
-    async def async_turn_off(self, **kwargs) -> None:
+    async def async_turn_off(self, **kwargs: Any) -> None:
         """Turn the switch off."""
-        try:
-            await self.coordinator.bbox.parentalcontrol.async_set_device_parental_control_state(
-                macaddress=self._device["macaddress"], enable=False
-            )
-        except BboxException as error:
-            _LOGGER.error(error)
-            return
-        await self.coordinator.async_request_refresh()
+        await super().async_turn_off(
+            macaddress=self._device["macaddress"], enable=False
+        )
