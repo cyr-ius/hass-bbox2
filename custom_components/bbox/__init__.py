@@ -5,6 +5,7 @@ from __future__ import annotations
 from homeassistant.config_entries import ConfigEntry
 from homeassistant.const import Platform
 from homeassistant.core import HomeAssistant
+from homeassistant.helpers import device_registry as dr
 
 from .coordinator import BboxDataUpdateCoordinator
 
@@ -34,3 +35,10 @@ async def async_setup_entry(hass: HomeAssistant, entry: BBoxConfigEntry) -> bool
 async def async_unload_entry(hass: HomeAssistant, entry: BBoxConfigEntry) -> bool:
     """Unload a config entry."""
     return await hass.config_entries.async_unload_platforms(entry, PLATFORMS)
+
+
+async def async_remove_config_entry_device(
+    hass: HomeAssistant, entry: BBoxConfigEntry, device_entry: dr.DeviceEntry
+) -> bool:
+    """Remove config entry from a device."""
+    return True
