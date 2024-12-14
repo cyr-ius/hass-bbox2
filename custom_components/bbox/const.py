@@ -30,4 +30,6 @@ TO_REDACT = {
     "starealmac",
     "system_serial",
     "username",
+    "imei",
+    "mac",
 }
