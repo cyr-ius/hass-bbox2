@@ -6,7 +6,8 @@ import logging
 from typing import Any
 
 from homeassistant.const import CONF_HOST
-from homeassistant.helpers import device_registry
+from homeassistant.core import callback
+from homeassistant.helpers import device_registry as dr
 from homeassistant.helpers.entity import Entity, EntityDescription
 from homeassistant.helpers.update_coordinator import CoordinatorEntity
 
@@ -64,21 +65,9 @@ class BboxDeviceEntity(BboxEntity):
         self._attr_device_info = {
             "name": self._device_name,
             "identifiers": {(DOMAIN, self._device_key)},
-            "connections": {
-                (device_registry.CONNECTION_NETWORK_MAC, device["macaddress"])
-            },
+            "connections": {(dr.CONNECTION_NETWORK_MAC, device["macaddress"])},
             "via_device": (DOMAIN, self.box_id),
         }
-
-    @property
-    def coordinator_data(self):
-        """Return connecting status."""
-        for device in (
-            self.coordinator.data.get("devices", {}).get("hosts", {}).get("list", [])
-        ):
-            if device["macaddress"] == self._device["macaddress"]:
-                return device
-        return {}
 
     @property
     def extra_state_attributes(self):
@@ -88,3 +77,19 @@ class BboxDeviceEntity(BboxEntity):
             "last_seen": self._device.get("lastseen"),
             "ip_address": self._device.get("ipaddress"),
         }
+
+    @callback
+    def _handle_coordinator_update(self) -> None:
+        """Respond to a DataUpdateCoordinator update."""
+        devices = (
+            self.coordinator.data.get("devices", {}).get("hosts", {}).get("list", [])
+        )
+        self._device = next(
+            (
+                device
+                for device in devices
+                if device["macaddress"] == self._device["macaddress"]
+            ),
+            {},
+        )
+        self.async_write_ha_state()
