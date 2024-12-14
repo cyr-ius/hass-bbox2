@@ -141,6 +141,11 @@ SENSOR_TYPES: tuple[BboxSensorDescription, ...] = (
         name="IPv6 Address",
         icon="mdi:wan",
     ),
+    BboxSensorDescription(
+        key="info.device.numberofboots",
+        name="Boot counter",
+        icon="mdi:counter",
+    ),
 )
 
 
