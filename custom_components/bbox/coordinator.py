@@ -71,9 +71,9 @@ class BboxDataUpdateCoordinator(DataUpdateCoordinator):
             parentalcontrol = self.check_list(
                 await self.bbox.parentalcontrol.async_get_parental_control_service_state()
             )
-            wps = self.check_list(await self.bbox.async_get_wps())
-            wifi = self.check_list(await self.bbox.async_get_wireless())
-            wan_ip = self.check_list(await self.bbox.async_get_wan_ip())
+            wps = self.check_list(await self.bbox.wifi.async_get_wps())
+            wifi = self.check_list(await self.bbox.wifi.async_get_wireless())
+            wan_ip = self.check_list(await self.bbox.wan.async_get_wan_ip())
         except Exception as error:
             _LOGGER.error(error)
             raise UpdateFailed from error
