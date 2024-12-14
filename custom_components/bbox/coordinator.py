@@ -33,7 +33,7 @@ class BboxDataUpdateCoordinator(DataUpdateCoordinator):
             _LOGGER,
             name=DOMAIN,
             update_interval=timedelta(
-                seconds=entry.data.get(CONF_REFRESH_RATE, DEFAULT_REFRESH_RATE)
+                seconds=entry.options.get(CONF_REFRESH_RATE, DEFAULT_REFRESH_RATE)
             ),
         )
         self.entry = entry
