@@ -75,7 +75,6 @@ class BboxDeviceEntity(BboxEntity):
         return {
             "link": self._device.get("link"),
             "last_seen": self._device.get("lastseen"),
-            "ip_address": self._device.get("ipaddress"),
         }
 
     @callback
