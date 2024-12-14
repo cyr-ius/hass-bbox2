@@ -1,11 +1,12 @@
 """Button for Bbox router."""
 
 import asyncio
-import logging
 from dataclasses import dataclass
+import logging
 from typing import Any, Final
 
 from bboxpy.exceptions import BboxException
+
 from homeassistant.components.switch import SwitchEntity, SwitchEntityDescription
 from homeassistant.core import HomeAssistant
 from homeassistant.helpers.entity_platform import AddEntitiesCallback
@@ -13,8 +14,6 @@ from homeassistant.helpers.entity_platform import AddEntitiesCallback
 from . import BBoxConfigEntry, BboxDataUpdateCoordinator
 from .entity import BboxDeviceEntity, BboxEntity
 from .helpers import finditem
-
-_LOGGER = logging.getLogger(__name__)
 
 
 @dataclass(frozen=True)
@@ -87,6 +86,8 @@ SWITCHE_DEVICES = BboxSwitchEntityDescription(
     turn_off="async_set_device_parental_control_state",
 )
 
+_LOGGER = logging.getLogger(__name__)
+
 
 async def async_setup_entry(
     hass: HomeAssistant, entry: BBoxConfigEntry, async_add_entities: AddEntitiesCallback
@@ -157,7 +158,7 @@ class DeviceParentalControlSwitch(BboxDeviceEntity, BboxSwitch):
     def __init__(
         self,
         coordinator: BboxDataUpdateCoordinator,
-        description: SwitchEntityDescription,
+        description: BboxSwitchEntityDescription,
         device: dict[str, Any],
     ) -> None:
         """Initialize."""

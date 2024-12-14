@@ -2,7 +2,6 @@
 
 from __future__ import annotations
 
-import logging
 from typing import Any
 
 from homeassistant.const import CONF_HOST
@@ -14,8 +13,6 @@ from homeassistant.helpers.update_coordinator import CoordinatorEntity
 from .const import BBOX_NAME, DOMAIN, MANUFACTURER
 from .coordinator import BboxDataUpdateCoordinator
 from .helpers import finditem
-
-_LOGGER = logging.getLogger(__name__)
 
 
 class BboxEntity(CoordinatorEntity[BboxDataUpdateCoordinator], Entity):

@@ -2,11 +2,14 @@
 
 from __future__ import annotations
 
-import logging
+from collections.abc import Callable
+from dataclasses import dataclass
+from typing import Any
 
 from homeassistant.components.sensor import (
     SensorDeviceClass,
     SensorEntity,
+    SensorEntityDescription,
     SensorStateClass,
 )
 from homeassistant.const import (
@@ -18,12 +21,20 @@ from homeassistant.const import (
 )
 from homeassistant.core import HomeAssistant
 from homeassistant.helpers.entity_platform import AddEntitiesCallback
+from homeassistant.helpers.typing import StateType
 
 from . import BBoxConfigEntry
 from .entity import BboxEntity
-from .helpers import BboxSensorDescription, finditem
+from .helpers import finditem
 
-_LOGGER = logging.getLogger(__name__)
+
+@dataclass(frozen=True)
+class BboxSensorDescription(SensorEntityDescription):
+    """Describes a sensor."""
+
+    get_value: Callable[..., Any] | None = None
+    value_fn: Callable[..., StateType] | None = None
+
 
 SENSOR_TYPES: tuple[BboxSensorDescription, ...] = (
     BboxSensorDescription(

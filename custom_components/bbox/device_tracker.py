@@ -2,7 +2,6 @@
 
 from __future__ import annotations
 
-import logging
 from typing import Any
 
 from homeassistant.components.device_tracker import SourceType
@@ -14,8 +13,6 @@ from homeassistant.helpers.entity_platform import AddEntitiesCallback
 from . import BBoxConfigEntry
 from .coordinator import BboxDataUpdateCoordinator
 from .entity import BboxDeviceEntity
-
-_LOGGER = logging.getLogger(__name__)
 
 
 async def async_setup_entry(
@@ -36,7 +33,6 @@ async def async_setup_entry(
 class BboxDeviceTracker(BboxDeviceEntity, ScannerEntity):
     """Representation of a tracked device."""
 
-    _attr_has_entity_name = True
     _attr_entity_registry_enabled_default = False
 
     def __init__(
