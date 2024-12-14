@@ -14,6 +14,7 @@ from homeassistant.const import (
     UnitOfDataRate,
     UnitOfInformation,
     UnitOfTemperature,
+    UnitOfTime,
 )
 from homeassistant.core import HomeAssistant
 from homeassistant.helpers.entity_platform import AddEntitiesCallback
@@ -145,6 +146,13 @@ SENSOR_TYPES: tuple[BboxSensorDescription, ...] = (
         key="info.device.numberofboots",
         name="Boot counter",
         icon="mdi:counter",
+    ),
+    BboxSensorDescription(
+        key="info.device.uptime",
+        name="Uptime",
+        icon="mdi:clock",
+        state_class=SensorDeviceClass.DURATION,
+        native_unit_of_measurement=UnitOfTime.SECONDS,
     ),
 )
 
