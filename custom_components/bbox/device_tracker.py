@@ -44,9 +44,6 @@ class BboxDeviceTracker(BboxDeviceEntity, ScannerEntity):
         """Initialize."""
         super().__init__(coordinator, description, device)
 
-        self._attr_name = self._device_name
-        self._attr_unique_id = f"{self._device_key}_device_tracker"
-
     @property
     def source_type(self) -> str:
         """Return the source type, eg gps or router, of the device."""
