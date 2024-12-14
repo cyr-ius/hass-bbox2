@@ -12,16 +12,22 @@ DEFAULT_VERIFY_SSL = True
 DEFAULT_REFRESH_RATE = 60
 
 TO_REDACT = {
-    "username",
-    "password",
+    "account",
+    "api_key",
+    "bssid",
     "encryption_password",
     "encryption_salt",
     "host",
-    "api_key",
-    "serial",
-    "system_serial",
+    "hostname",
     "ip4_addr",
     "ip6_addr",
-    "account",
+    "ipaddress",
     "key",
+    "macaddress",
+    "passphrase",
+    "password",
+    "serial",
+    "starealmac",
+    "system_serial",
+    "username",
 }
