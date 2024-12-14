@@ -131,6 +131,16 @@ SENSOR_TYPES: tuple[BboxSensorDescription, ...] = (
         native_unit_of_measurement=PERCENTAGE,
         state_class=SensorStateClass.MEASUREMENT,
     ),
+    BboxSensorDescription(
+        key="wan_ip.wan.ip.address",
+        name="IP Address",
+        icon="mdi:wan",
+    ),
+    BboxSensorDescription(
+        key="wan_ip.wan.ip.ip6address.0.ipaddress",
+        name="IPv6 Address",
+        icon="mdi:wan",
+    ),
 )
 
 
