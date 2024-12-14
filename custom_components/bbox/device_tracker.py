@@ -52,21 +52,21 @@ class BboxDeviceTracker(BboxDeviceEntity, ScannerEntity):
         self._attr_unique_id = f"{self._device_key}_device_tracker"
 
     @property
-    def source_type(self):
+    def source_type(self) -> str:
         """Return the source type, eg gps or router, of the device."""
         return SourceType.ROUTER
 
     @property
-    def mac_address(self):
+    def mac_address(self) -> str:
         """Return mac address."""
         return self._device["macaddress"]
 
     @property
-    def ip_address(self):
+    def ip_address(self) -> str:
         """Return mac address."""
         return self._device["ipaddress"]
 
     @property
-    def is_connected(self):
+    def is_connected(self) -> bool:
         """Return connecting status."""
-        return self.coordinator_data.get("active", 0) == 1
+        return self._device.get("active", 0) == 1
