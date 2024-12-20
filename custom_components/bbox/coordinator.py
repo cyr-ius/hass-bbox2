@@ -44,7 +44,6 @@ class BboxDataUpdateCoordinator(DataUpdateCoordinator):
             self.bbox = Bbox(
                 password=self.entry.data[CONF_PASSWORD],
                 hostname=self.entry.data[CONF_HOST],
-                session=async_create_clientsession(self.hass),
                 use_tls=self.entry.data.get(CONF_USE_TLS, False),
                 verify_ssl=self.entry.data.get(CONF_VERIFY_SSL, False),
             )

@@ -60,7 +60,6 @@ class ConfigFlow(config_entries.ConfigFlow, domain=DOMAIN):
                 api = Bbox(
                     hostname=user_input[CONF_HOST],
                     password=user_input[CONF_PASSWORD],
-                    session=async_create_clientsession(self.hass),
                     use_tls=user_input[CONF_USE_TLS],
                     verify_ssl=user_input[CONF_VERIFY_SSL],
                 )
