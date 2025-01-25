@@ -4,9 +4,9 @@ from __future__ import annotations
 
 import logging
 from datetime import timedelta
-from typing import Any
+from typing import Any, Callable
 
-from bboxpy import AuthorizationError, Bbox
+from bboxpy import AuthorizationError, Bbox, BboxException
 from homeassistant.config_entries import ConfigEntry
 from homeassistant.const import CONF_HOST, CONF_PASSWORD, CONF_VERIFY_SSL
 from homeassistant.core import HomeAssistant
@@ -64,15 +64,19 @@ class BboxDataUpdateCoordinator(DataUpdateCoordinator):
         """Fetch data."""
         try:
             bbox_info = self.check_list(await self.bbox.device.async_get_bbox_info())
-            devices = await self.bbox.lan.async_get_connected_devices()
-            wan_ip_stats = self.check_list(await self.bbox.wan.async_get_wan_ip_stats())
-            parentalcontrol = self.check_list(
-                await self.bbox.parentalcontrol.async_get_parental_control_service_state()
+            devices = await self._call(self.bbox.lan.async_get_connected_devices)
+            wan_ip_stats = self.check_list(
+                await self._call(self.bbox.wan.async_get_wan_ip_stats)
             )
-            wps = self.check_list(await self.bbox.wifi.async_get_wps())
-            wifi = self.check_list(await self.bbox.wifi.async_get_wireless())
-            wan_ip = self.check_list(await self.bbox.wan.async_get_wan_ip())
-        except Exception as error:
+            parentalcontrol = self.check_list(
+                await self._call(
+                    self.bbox.parentalcontrol.async_get_parental_control_service_state
+                )
+            )
+            wps = self.check_list(await self._call(self.bbox.wifi.async_get_wps))
+            wifi = self.check_list(await self._call(self.bbox.wifi.async_get_wireless))
+            wan_ip = self.check_list(await self._call(self.bbox.wan.async_get_wan_ip))
+        except BboxException as error:
             _LOGGER.error(error)
             raise UpdateFailed from error
 
@@ -129,3 +133,11 @@ class BboxDataUpdateCoordinator(DataUpdateCoordinator):
                 f"The call contains more than one element ({len(obj)}): {obj}"
             )
         return obj[0]
+
+    async def _call(self, func: Callable[..., Any], *args: Any) -> dict[str, Any]:
+        """Execute request."""
+        try:
+            return await func(*args)
+        except BboxException as error:
+            _LOGGER.warning("Error while execute: %s (%s)", func.__name__, error)
+        return {}
