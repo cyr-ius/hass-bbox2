@@ -165,6 +165,18 @@ SENSOR_TYPES: tuple[BboxSensorDescription, ...] = (
         state_class=SensorDeviceClass.DURATION,
         native_unit_of_measurement=UnitOfTime.SECONDS,
     ),
+    BboxSensorDescription(
+        key="memory.device.mem.free",
+        name="Memory free",
+        device_class=SensorDeviceClass.CURRENT,
+        icon="mdi:gauge",
+        get_value=lambda self: (
+            int(finditem(self.coordinator.data, "memory.device.mem.free") * 100)
+            / int(finditem(self.coordinator.data, "memory.device.mem.total"))
+        ),
+        native_unit_of_measurement=PERCENTAGE,
+        state_class=SensorStateClass.MEASUREMENT,
+    ),
 )
 
 
