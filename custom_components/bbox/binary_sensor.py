@@ -4,7 +4,6 @@ from __future__ import annotations
 
 from collections.abc import Callable
 from dataclasses import dataclass
-from typing import Any
 
 from homeassistant.components.binary_sensor import (
     BinarySensorDeviceClass,
@@ -24,7 +23,6 @@ from .helpers import finditem
 class BboxBinarySensorDescription(BinarySensorEntityDescription):
     """Describes a sensor."""
 
-    get_value: Callable[..., Any] | None = None
     value_fn: Callable[..., StateType] | None = None
 
 
