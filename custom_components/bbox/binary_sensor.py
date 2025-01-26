@@ -4,6 +4,7 @@ from __future__ import annotations
 
 from collections.abc import Callable
 from dataclasses import dataclass
+from typing import Any
 
 from homeassistant.components.binary_sensor import (
     BinarySensorDeviceClass,
@@ -23,6 +24,7 @@ from .helpers import finditem
 class BboxBinarySensorDescription(BinarySensorEntityDescription):
     """Describes a sensor."""
 
+    get_value: Callable[..., Any] | None = None
     value_fn: Callable[..., StateType] | None = None
 
 
@@ -32,6 +34,36 @@ BINARIES_SENSORS: tuple[BboxBinarySensorDescription, ...] = (
         name="Link status",
         device_class=BinarySensorDeviceClass.CONNECTIVITY,
         value_fn=lambda x: x == 1,
+    ),
+    BboxBinarySensorDescription(
+        key="led.ethernetPort.0.state",
+        name="Ethernet port 1",
+        value_fn=lambda x: x.lower() == "up",
+        entity_registry_enabled_default=False,
+    ),
+    BboxBinarySensorDescription(
+        key="led.ethernetPort.1.state",
+        name="Ethernet port 2",
+        value_fn=lambda x: x.lower() == "up",
+        entity_registry_enabled_default=False,
+    ),
+    BboxBinarySensorDescription(
+        key="led.ethernetPort.2.state",
+        name="Ethernet port 3",
+        value_fn=lambda x: x.lower() == "up",
+        entity_registry_enabled_default=False,
+    ),
+    BboxBinarySensorDescription(
+        key="led.ethernetPort.3.state",
+        name="Ethernet port 4",
+        value_fn=lambda x: x.lower() == "up",
+        entity_registry_enabled_default=False,
+    ),
+    BboxBinarySensorDescription(
+        key="led.ethernetPort.4.state",
+        name="Ethernet port 5",
+        value_fn=lambda x: x.lower() == "up",
+        entity_registry_enabled_default=False,
     ),
 )
 
