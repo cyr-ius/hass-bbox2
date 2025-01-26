@@ -14,6 +14,7 @@ from homeassistant.exceptions import ConfigEntryAuthFailed
 from homeassistant.helpers.update_coordinator import DataUpdateCoordinator, UpdateFailed
 
 from .const import CONF_REFRESH_RATE, CONF_USE_TLS, DEFAULT_REFRESH_RATE, DOMAIN
+from .fakedevices import FAKE_DEVICES
 
 _LOGGER = logging.getLogger(__name__)
 
@@ -39,6 +40,7 @@ class BboxDataUpdateCoordinator(DataUpdateCoordinator):
 
     async def _async_setup(self) -> None:
         """Start Bbox connection."""
+        return
         try:
             self.bbox = Bbox(
                 password=self.entry.data[CONF_PASSWORD],
@@ -62,8 +64,13 @@ class BboxDataUpdateCoordinator(DataUpdateCoordinator):
 
     async def _async_update_data(self) -> dict[str, dict[str, Any]]:
         """Fetch data."""
+        return FAKE_DEVICES
         try:
             bbox_info = self.check_list(await self.bbox.device.async_get_bbox_info())
+            memory = self.check_list(
+                await self._call(self.bbox.device.async_get_bbox_mem)
+            )
+            led = self.check_list(await self._call(self.bbox.device.async_get_bbox_led))
             devices = await self._call(self.bbox.lan.async_get_connected_devices)
             wan_ip_stats = self.check_list(
                 await self._call(self.bbox.wan.async_get_wan_ip_stats)
@@ -82,6 +89,8 @@ class BboxDataUpdateCoordinator(DataUpdateCoordinator):
 
         return {
             "info": bbox_info,
+            "memory": memory,
+            "led": led,
             "devices": self.merge_objects(devices),
             "wan_ip_stats": wan_ip_stats,
             "parentalcontrol": parentalcontrol,
