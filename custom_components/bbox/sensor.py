@@ -168,7 +168,7 @@ SENSOR_TYPES: tuple[BboxSensorDescription, ...] = (
     BboxSensorDescription(
         key="memory.device.mem.free",
         name="Memory free",
-        device_class=SensorDeviceClass.CURRENT,
+        device_class=SensorDeviceClass.POWER_FACTOR,
         icon="mdi:gauge",
         get_value=lambda self: (
             int(finditem(self.coordinator.data, "memory.device.mem.free") * 100)
