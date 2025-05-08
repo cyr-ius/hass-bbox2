@@ -54,9 +54,9 @@ class BboxDeviceEntity(BboxEntity):
         self._device = device
         self._device_key = f"{self.box_id}_{device['macaddress'].replace(':', '_')}"
         if self._device.get("userfriendlyname", "") != "":
-            self._device_name = device["userfriendlyname"]
+            self._device_name = str(device["userfriendlyname"])
         elif self._device.get("hostname") != "":
-            self._device_name = device["hostname"]
+            self._device_name = str(device["hostname"])
         else:
             self._device_name = device["macaddress"]
 
