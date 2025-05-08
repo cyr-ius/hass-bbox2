@@ -63,7 +63,7 @@ class BboxDeviceEntity(BboxEntity):
         self._attr_name = str(self._device_name)
         self._attr_unique_id = f"{self._device_key}_device_tracker"
         self._attr_device_info = {
-            "name": self._device_name,
+            "name": str(self._device_name),
             "identifiers": {(DOMAIN, self._device_key)},
             "connections": {(dr.CONNECTION_NETWORK_MAC, device["macaddress"])},
             "via_device": (DOMAIN, self.box_id),
