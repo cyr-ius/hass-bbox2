@@ -60,7 +60,7 @@ class BboxDeviceEntity(BboxEntity):
         else:
             self._device_name = device["macaddress"]
 
-        self._attr_name = self._device_name
+        self._attr_name = str(self._device_name)
         self._attr_unique_id = f"{self._device_key}_device_tracker"
         self._attr_device_info = {
             "name": self._device_name,
