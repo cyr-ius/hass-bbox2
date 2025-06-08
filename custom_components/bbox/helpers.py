@@ -8,7 +8,7 @@ from typing import Any
 def finditem(data: dict[str, Any], key_chain: str, default: Any = None) -> Any:
     """Get recursive key and return value.
 
-    data is a mandatory dictonnary
+    data is a mandatory dictionary
     key , string with dot for key delimited (ex: "key.key.key")
 
     It is possible to integrate an element of an array by indicating its index number
