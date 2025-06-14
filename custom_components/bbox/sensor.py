@@ -185,6 +185,7 @@ SENSOR_TYPES: tuple[BboxSensorDescription, ...] = (
         value_fn=lambda x: float(x),
         native_unit_of_measurement=UnitOfDataRate.KILOBITS_PER_SECOND,
         state_class=SensorStateClass.MEASUREMENT,
+        entity_registry_enabled_default= False
     ),
 )
 
