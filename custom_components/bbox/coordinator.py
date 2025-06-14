@@ -80,10 +80,15 @@ class BboxDataUpdateCoordinator(DataUpdateCoordinator):
             wps = self.check_list(await self._call(self.bbox.wifi.async_get_wps))
             wifi = self.check_list(await self._call(self.bbox.wifi.async_get_wireless))
             wan_ip = self.check_list(await self._call(self.bbox.wan.async_get_wan_ip))
-            speedtest_infos = self.check_list(await self.bbox.speedtest.async_get_speedtest_infos())
         except BboxException as error:
             _LOGGER.error(error)
             raise UpdateFailed from error
+        
+        try:
+            speedtest_infos = self.check_list(await self.bbox.speedtest.async_get_speedtest_infos())
+        except BboxException as error:
+            _LOGGER.warning('SpeedTest Module not found (%s)', error)     
+            speedtest_infos = {}       
 
         return {
             "info": bbox_info,
