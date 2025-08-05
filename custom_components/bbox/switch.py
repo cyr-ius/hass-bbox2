@@ -50,7 +50,7 @@ SWITCH_TYPES: Final[tuple[BboxSwitchEntityDescription, ...]] = (
         key="wifi",
         translation_key="wifi",
         name="Wifi",
-        state="wifi.wireless.radio.enable",
+        state="wifi.wireless.radio.24.enable",
         api="wifi",
         turn_on="async_wireless_turn_on",
         turn_off="async_wireless_turn_off",
@@ -79,8 +79,8 @@ SWITCH_TYPES: Final[tuple[BboxSwitchEntityDescription, ...]] = (
         name="Wifi Guest",
         state="wifi.wireless.radio.guest.enable",
         api="wifi",
-        turn_on="async_set_wireless_guest_state",
-        turn_off="async_set_wireless_guest_state",
+        turn_on="async_wireless_guest_turn_on",
+        turn_off="async_wireless_guest_turn_off",
     ),
 )
 
