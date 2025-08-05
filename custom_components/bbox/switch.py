@@ -6,7 +6,8 @@ from dataclasses import dataclass
 from typing import Any, Final
 
 from bboxpy.exceptions import BboxException
-from homeassistant.components.switch import SwitchEntity, SwitchEntityDescription
+from homeassistant.components.switch import (SwitchEntity,
+                                             SwitchEntityDescription)
 from homeassistant.core import HomeAssistant
 from homeassistant.helpers.entity_platform import AddEntitiesCallback
 
@@ -44,6 +45,15 @@ SWITCH_TYPES: Final[tuple[BboxSwitchEntityDescription, ...]] = (
         api="wps",
         turn_on="async_on_wps",
         turn_off="async_off_wps",
+    ),
+    BboxSwitchEntityDescription(
+        key="wifi",
+        translation_key="wifi",
+        name="Wifi",
+        state="wifi.wireless.radio.enable",
+        api="wifi",
+        turn_on="async_wireless_turn_on",
+        turn_off="async_wireless_turn_off",
     ),
     BboxSwitchEntityDescription(
         key="wifi_24",
@@ -123,8 +133,6 @@ class BboxSwitch(BboxEntity, SwitchEntity):
         return bool(finditem(self.coordinator.data, self.entity_description.state))
 
     async def async_turn_on(self, **kwargs: Any) -> None:
-        """Turn the switch on."""
-        kwargs = kwargs or {"enable": True}
         try:
             await getattr(
                 getattr(self.coordinator.bbox, self.entity_description.api),
@@ -138,7 +146,6 @@ class BboxSwitch(BboxEntity, SwitchEntity):
 
     async def async_turn_off(self, **kwargs: Any) -> None:
         """Turn the switch off."""
-        kwargs = kwargs or {"enable": False}
         try:
             await getattr(
                 getattr(self.coordinator.bbox, self.entity_description.api),
