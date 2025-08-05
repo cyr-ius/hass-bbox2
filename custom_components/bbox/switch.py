@@ -6,7 +6,8 @@ from dataclasses import dataclass
 from typing import Any, Final
 
 from bboxpy.exceptions import BboxException
-from homeassistant.components.switch import SwitchEntity, SwitchEntityDescription
+from homeassistant.components.switch import (SwitchEntity,
+                                             SwitchEntityDescription)
 from homeassistant.core import HomeAssistant
 from homeassistant.helpers.entity_platform import AddEntitiesCallback
 
@@ -46,6 +47,15 @@ SWITCH_TYPES: Final[tuple[BboxSwitchEntityDescription, ...]] = (
         turn_off="async_off_wps",
     ),
     BboxSwitchEntityDescription(
+        key="wifi",
+        translation_key="wifi",
+        name="Wifi",
+        state="wifi.wireless.radio.24.enable",
+        api="wifi",
+        turn_on="async_wireless_turn_on",
+        turn_off="async_wireless_turn_off",
+    ),
+    BboxSwitchEntityDescription(
         key="wifi_24",
         translation_key="wifi_24",
         name="Wifi 2.4Ghz",
@@ -69,8 +79,8 @@ SWITCH_TYPES: Final[tuple[BboxSwitchEntityDescription, ...]] = (
         name="Wifi Guest",
         state="wifi.wireless.radio.guest.enable",
         api="wifi",
-        turn_on="async_set_wireless_guest_state",
-        turn_off="async_set_wireless_guest_state",
+        turn_on="async_wireless_guest_turn_on",
+        turn_off="async_wireless_guest_turn_off",
     ),
 )
 
@@ -123,8 +133,6 @@ class BboxSwitch(BboxEntity, SwitchEntity):
         return bool(finditem(self.coordinator.data, self.entity_description.state))
 
     async def async_turn_on(self, **kwargs: Any) -> None:
-        """Turn the switch on."""
-        kwargs = kwargs or {"enable": True}
         try:
             await getattr(
                 getattr(self.coordinator.bbox, self.entity_description.api),
@@ -138,7 +146,6 @@ class BboxSwitch(BboxEntity, SwitchEntity):
 
     async def async_turn_off(self, **kwargs: Any) -> None:
         """Turn the switch off."""
-        kwargs = kwargs or {"enable": False}
         try:
             await getattr(
                 getattr(self.coordinator.bbox, self.entity_description.api),
