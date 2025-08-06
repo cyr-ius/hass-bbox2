@@ -1,11 +1,12 @@
 """Button for Bbox router."""
 
 import asyncio
-import logging
 from dataclasses import dataclass
+import logging
 from typing import Any, Final
 
 from bboxpy.exceptions import BboxException
+
 from homeassistant.components.switch import SwitchEntity, SwitchEntityDescription
 from homeassistant.core import HomeAssistant
 from homeassistant.helpers.entity_platform import AddEntitiesCallback
@@ -51,8 +52,8 @@ SWITCH_TYPES: Final[tuple[BboxSwitchEntityDescription, ...]] = (
         name="Wifi 2.4Ghz",
         state="wifi.wireless.radio.24.enable",
         api="wifi",
-        turn_on="async_wireless_turn_on",
-        turn_off="async_wireless_turn_off",
+        turn_on="async_set_wireless_24",
+        turn_off="async_set_wireless_24",
     ),
     BboxSwitchEntityDescription(
         key="wifi_5",
@@ -60,8 +61,8 @@ SWITCH_TYPES: Final[tuple[BboxSwitchEntityDescription, ...]] = (
         name="Wifi 5Ghz",
         state="wifi.wireless.radio.5.enable",
         api="wifi",
-        turn_on="async_wireless_turn_on",
-        turn_off="async_wireless_turn_off",
+        turn_on="async_set_wireless_5",
+        turn_off="async_set_wireless_5",
     ),
     BboxSwitchEntityDescription(
         key="wifi_guest",
@@ -69,8 +70,8 @@ SWITCH_TYPES: Final[tuple[BboxSwitchEntityDescription, ...]] = (
         name="Wifi Guest",
         state="wifi.wireless.radio.guest.enable",
         api="wifi",
-        turn_on="async_set_wireless_guest_state",
-        turn_off="async_set_wireless_guest_state",
+        turn_on="async_set_wireless_guest",
+        turn_off="async_set_wireless_guest",
     ),
 )
 
