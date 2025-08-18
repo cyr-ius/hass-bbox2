@@ -182,10 +182,10 @@ SENSOR_TYPES: tuple[BboxSensorDescription, ...] = (
         name="Speedtest download",
         icon="mdi:speedometer",
         device_class=SensorDeviceClass.DATA_RATE,
-        value_fn=lambda x: float(x),
+        value_fn=lambda x: (lambda x: float(x) if x.replace('.', '', 1).isdigit() else None)(x),
         native_unit_of_measurement=UnitOfDataRate.KILOBITS_PER_SECOND,
         state_class=SensorStateClass.MEASUREMENT,
-        entity_registry_enabled_default= False
+        entity_registry_enabled_default=False
     ),
 )
 
