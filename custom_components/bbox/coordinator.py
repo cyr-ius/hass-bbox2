@@ -3,8 +3,9 @@
 from __future__ import annotations
 
 import logging
+from collections.abc import Callable
 from datetime import timedelta
-from typing import Any, Callable
+from typing import Any
 
 from bboxpy import AuthorizationError, Bbox, BboxException
 from homeassistant.config_entries import ConfigEntry
@@ -83,12 +84,14 @@ class BboxDataUpdateCoordinator(DataUpdateCoordinator):
         except BboxException as error:
             _LOGGER.error(error)
             raise UpdateFailed from error
-        
+
         try:
-            speedtest_infos = self.check_list(await self.bbox.speedtest.async_get_speedtest_infos())
+            speedtest_infos = self.check_list(
+                await self.bbox.speedtest.async_get_speedtest_infos()
+            )
         except BboxException as error:
-            _LOGGER.warning('SpeedTest Module not found (%s)', error)     
-            speedtest_infos = {}       
+            _LOGGER.warning("SpeedTest Module not found (%s)", error)
+            speedtest_infos = {}
 
         return {
             "info": bbox_info,
@@ -126,13 +129,13 @@ class BboxDataUpdateCoordinator(DataUpdateCoordinator):
             return a
 
         result = objs[0]
-        assert isinstance(
-            result, dict
-        ), f"The first element of the list is not a dict (but {type(result)}): {result}"
+        assert isinstance(result, dict), (
+            f"The first element of the list is not a dict (but {type(result)}): {result}"
+        )
         for idx, obj in enumerate(objs[1:]):
-            assert isinstance(
-                obj, dict
-            ), f"The {idx+2} element of the list is not a dict (but {type(obj)}): {obj}"
+            assert isinstance(obj, dict), (
+                f"The {idx + 2} element of the list is not a dict (but {type(obj)}): {obj}"
+            )
             result = merge(result, obj)
         return result
 
