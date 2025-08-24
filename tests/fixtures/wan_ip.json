@@ -1,0 +1,36 @@
+{
+  "wan": {
+    "internet": { "state": 2 },
+    "interface": { "id": 4, "default": 0, "state": 1 },
+    "ip": {
+      "address": "176.0.0.0",
+      "cgnatenable": 0,
+      "maptenable": 0,
+      "state": "Up",
+      "gateway": "176.0.0.1",
+      "dnsservers": "194.158.122.15,194.158.122.10",
+      "subnet": "255.255.255.255",
+      "dnsserversv6": "2001:860:b0ff:1::2,2001:860:b0ff:1::1",
+      "ip6state": "Up",
+      "ip6address": [
+        {
+          "ipaddress": "**REDACTED**",
+          "status": "Preferred",
+          "valid": "9999-12-31T23:59:59Z",
+          "preferred": "9999-12-31T23:59:59Z"
+        }
+      ],
+      "ip6prefix": [
+        {
+          "prefix": "2001:861:3244:fde0::/60",
+          "status": "Preferred",
+          "valid": "2024-12-14T13:43:04+0100",
+          "preferred": "2024-12-14T13:13:04+0100"
+        }
+      ],
+      "mac": "6c:99:61:ed:10:80",
+      "mtu": 1500
+    },
+    "link": { "state": "Up", "type": "sfp" }
+  }
+}

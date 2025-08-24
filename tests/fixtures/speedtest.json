@@ -1,0 +1,54 @@
+{
+  "speedtest": {
+    "cdc": 0,
+    "internet": {
+      "state": 2
+    },
+    "latestmeasurements": {
+      "download": [
+        {
+          "date": "",
+          "speed": "OK"
+        },
+        {
+          "date": "",
+          "speed": "OK"
+        },
+        {
+          "date": "",
+          "speed": "OK"
+        },
+        {
+          "date": "",
+          "speed": "OK"
+        },
+        {
+          "date": "",
+          "speed": "OK"
+        }
+      ],
+      "upload": [
+        {
+          "date": "",
+          "speed": "OK"
+        },
+        {
+          "date": "",
+          "speed": "OK"
+        },
+        {
+          "date": "",
+          "speed": "OK"
+        },
+        {
+          "date": "",
+          "speed": "OK"
+        },
+        {
+          "date": "",
+          "speed": "OK"
+        }
+      ]
+    }
+  }
+}

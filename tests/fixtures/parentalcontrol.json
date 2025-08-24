@@ -1,0 +1,9 @@
+{
+  "parentalcontrol": {
+    "scheduler": {
+      "now": "2024-12-14T11:57:46+0100",
+      "enable": 0,
+      "defaultpolicy": "Accept"
+    }
+  }
+}

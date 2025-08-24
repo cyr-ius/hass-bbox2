@@ -1,0 +1,258 @@
+{
+  "wireless": {
+    "extended_character_ssid": "extended",
+    "status": "Configured",
+    "driverbusy": 0,
+    "unified": 2,
+    "isDefault24": 0,
+    "isDefault5": 0,
+    "unified_available": 0,
+    "new_config_unified": 1,
+    "radio": {
+      "24": {
+        "enable": 1,
+        "standard": "11ax",
+        "state": 1,
+        "channel": 0,
+        "current_channel": 6,
+        "current_bandwidth": 20,
+        "htbw": 20
+      },
+      "5": {
+        "enable": 1,
+        "standard": "11ax",
+        "state": 1,
+        "channel": 0,
+        "current_channel": 108,
+        "current_bandwidth": 160,
+        "dfs": 1,
+        "htbw": 0,
+        "greenap": 0,
+        "ecoMode": { "enable": 0, "state": "Idle" }
+      },
+      "guest": { "enable": 0 }
+    },
+    "scheduler": { "now": "2024-12-13T15:45:10+0100", "enable": 0 },
+    "ssid": {
+      "24": {
+        "id": "bBOX-STCO-4AC",
+        "enable": 1,
+        "hidden": 0,
+        "bssid": "62:D4:53:BF:66:4B",
+        "wmmenable": 1,
+        "wps": { "enable": 1, "available": 1, "status": "" },
+        "security": {
+          "specialchar": 1,
+          "isdefault": 0,
+          "protocol": "WPA2",
+          "encryption": "AES",
+          "passphrase": "**REDACTED**"
+        }
+      },
+      "5": {
+        "id": "bBOX-STCO-4AC-5GHz",
+        "enable": 1,
+        "hidden": 0,
+        "bssid": "72:D4:53:BF:66:4D",
+        "wmmenable": 1,
+        "wps": { "enable": 1, "available": 1, "status": "" },
+        "security": {
+          "specialchar": 1,
+          "isdefault": 0,
+          "protocol": "WPA2",
+          "encryption": "AES",
+          "passphrase": "**REDACTED**"
+        }
+      },
+      "guest": {
+        "id": "Bbox-597BA49B-Invite",
+        "enable": 0,
+        "hidden": 0,
+        "bssid": "62:D4:53:BF:66:48",
+        "security": {
+          "specialchar": 1,
+          "isdefault": 1,
+          "protocol": "WPA2",
+          "encryption": "AES",
+          "passphrase": "**REDACTED**"
+        },
+        "notification": { "dayInSeconds": 86400, "countdown": 30 }
+      },
+      "compatibility": {
+        "id": "Bbox-597BA49B-Legacy",
+        "enable": 0,
+        "hidden": 0,
+        "bssid": "62:D4:53:BF:66:49",
+        "security": {
+          "specialchar": 1,
+          "isdefault": 1,
+          "protocol": "WPA+WPA2",
+          "encryption": "Auto",
+          "passphrase": "**REDACTED**"
+        },
+        "notification": { "dayInSeconds": 86400, "countdown": 30 }
+      }
+    },
+    "capabilities": {
+      "5": [
+        {
+          "channel": 36,
+          "ht": {
+            "20": "36",
+            "40": "36 / 40",
+            "80": "36 / 48",
+            "160": "36 / 64"
+          },
+          "nodfs": true,
+          "cactime": 0,
+          "cactime40": 0
+        },
+        {
+          "channel": 40,
+          "ht": { "20": "40" },
+          "nodfs": true,
+          "cactime": 0,
+          "cactime40": 0
+        },
+        {
+          "channel": 44,
+          "ht": { "20": "44", "40": "44 / 48" },
+          "nodfs": true,
+          "cactime": 0,
+          "cactime40": 0
+        },
+        {
+          "channel": 48,
+          "ht": { "20": "48" },
+          "nodfs": true,
+          "cactime": 0,
+          "cactime40": 0
+        },
+        {
+          "channel": 52,
+          "ht": { "20": "52", "40": "52 / 56", "80": "52 / 64" },
+          "nodfs": false,
+          "cactime": 1,
+          "cactime40": 1,
+          "cactime80": 1
+        },
+        {
+          "channel": 56,
+          "ht": { "20": "56" },
+          "nodfs": false,
+          "cactime": 1,
+          "cactime40": 1
+        },
+        {
+          "channel": 60,
+          "ht": { "20": "60", "40": "60 / 64" },
+          "nodfs": false,
+          "cactime": 1,
+          "cactime40": 1
+        },
+        {
+          "channel": 64,
+          "ht": { "20": "64" },
+          "nodfs": false,
+          "cactime": 1,
+          "cactime40": 1
+        },
+        {
+          "channel": 100,
+          "ht": {
+            "20": "100",
+            "40": "100 / 104",
+            "80": "100 / 112",
+            "160": "100 / 128"
+          },
+          "nodfs": false,
+          "cactime": 1,
+          "cactime40": 1,
+          "cactime80": 1,
+          "cactime160": 10
+        },
+        {
+          "channel": 104,
+          "ht": { "20": "104" },
+          "nodfs": false,
+          "cactime": 1,
+          "cactime40": 1
+        },
+        {
+          "channel": 108,
+          "ht": { "20": "108", "40": "108 / 112" },
+          "nodfs": false,
+          "cactime": 1,
+          "cactime40": 1
+        },
+        {
+          "channel": 112,
+          "ht": { "20": "112" },
+          "nodfs": false,
+          "cactime": 1,
+          "cactime40": 1
+        },
+        {
+          "channel": 116,
+          "ht": { "20": "116", "40": "116 / 120", "80": "116 / 128" },
+          "nodfs": false,
+          "cactime": 1,
+          "cactime40": 1,
+          "cactime80": 10
+        },
+        {
+          "channel": 120,
+          "ht": { "20": "120" },
+          "nodfs": false,
+          "cactime": 1,
+          "cactime40": 1
+        },
+        {
+          "channel": 124,
+          "ht": { "20": "124", "40": "124/ 128" },
+          "nodfs": false,
+          "cactime": 1,
+          "cactime40": 1
+        },
+        {
+          "channel": 128,
+          "ht": { "20": "128" },
+          "nodfs": false,
+          "cactime": 1,
+          "cactime40": 1
+        },
+        {
+          "channel": 132,
+          "ht": { "20": "132", "40": "132 / 136" },
+          "nodfs": false,
+          "cactime": 1,
+          "cactime40": 1
+        },
+        {
+          "channel": 136,
+          "ht": { "20": "136" },
+          "nodfs": false,
+          "cactime": 1,
+          "cactime40": 1
+        },
+        {
+          "channel": 140,
+          "ht": { "20": "140" },
+          "nodfs": false,
+          "cactime": 1,
+          "cactime40": 1
+        }
+      ]
+    },
+    "standard": {
+      "24": [
+        { "key": "11bgn", "value": "Wi-Fi 4 (b/g/n)" },
+        { "key": "11ax", "value": "Wi-Fi 6 (b/g/n/ax)" }
+      ],
+      "5": [
+        { "key": "11ac", "value": "Wi-Fi 5 (n/ac)" },
+        { "key": "11ax", "value": "Wi-Fi 6 (n/ac/ax)" }
+      ]
+    }
+  }
+}

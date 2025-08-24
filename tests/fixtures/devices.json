@@ -1,0 +1,228 @@
+{
+  "hosts": {
+    "list": [
+      {
+        "id": 2,
+        "hostname": "Host-001",
+        "macaddress": "00:01:02:03:04:0e",
+        "duid": "",
+        "ipaddress": "192.168.1.152",
+        "type": "DHCP",
+        "link": "Ethernet",
+        "guest": 0,
+        "devicetype": "Device",
+        "firstseen": "2024-12-11T00:23:52+0100",
+        "lastseen": 0,
+        "ip6address": [
+          {
+            "ipaddress": "fe80::211:32ff:fe89:110e",
+            "status": "Preferred",
+            "lastseen": "2024-12-13T15:38:17+0100",
+            "lastscan": "2024-12-11T00:23:53+0100"
+          },
+          {
+            "ipaddress": "2001:000:20c2:000:211:32ff:fe89:110e",
+            "status": "Preferred",
+            "lastseen": "2024-12-13T15:38:13+0100",
+            "lastscan": "1970-01-03T14:32:59+0100"
+          }
+        ],
+        "ethernet": {
+          "physicalport": 2,
+          "logicalport": 3,
+          "speed": 1000,
+          "mode": "Full"
+        },
+        "wireless": {
+          "band": "N/A",
+          "txUsage": 0,
+          "rxUsage": 0,
+          "estimatedRate": 0,
+          "rssi0": 0,
+          "rssi1": 0,
+          "rssi2": 0,
+          "mcs": 0,
+          "rate": 0,
+          "idle": 0,
+          "wexindex": 0,
+          "starealmac": "00:00:00:00:00:00",
+          "static": 0
+        },
+        "plc": {
+          "rxphyrate": "",
+          "txphyrate": "",
+          "associateddevice": 0,
+          "interface": 0,
+          "ethernetspeed": 0
+        },
+        "lease": 78591,
+        "active": 1,
+        "parentalcontrol": {
+          "enable": 0,
+          "status": "Allowed",
+          "statusRemaining": 0,
+          "statusUntil": ""
+        },
+        "ping": { "average": 0 },
+        "scan": { "services": [] }
+      },
+      {
+        "id": 9,
+        "hostname": "Host-004",
+        "macaddress": "01:02:03:04:05:f9",
+        "duid": "",
+        "ipaddress": "192.168.1.186",
+        "type": "DHCP",
+        "link": "Wifi 5",
+        "guest": 0,
+        "devicetype": "Device",
+        "firstseen": "2024-12-11T00:23:52+0100",
+        "lastseen": 0,
+        "ip6address": [
+          {
+            "ipaddress": "fe80::1c62:4617:a7d4:42b8",
+            "status": "Preferred",
+            "lastseen": "2024-12-13T15:30:17+0100",
+            "lastscan": "2024-06-27T09:22:34+0200"
+          },
+          {
+            "ipaddress": "2001:861:20c2:d9d0:f911:27db:9d7:a940",
+            "status": "Preferred",
+            "lastseen": "2024-12-13T15:37:21+0100",
+            "lastscan": "1970-01-03T14:32:59+0100"
+          }
+        ],
+        "ethernet": {
+          "physicalport": 6,
+          "logicalport": 7,
+          "speed": 0,
+          "mode": ""
+        },
+        "wireless": {
+          "band": "5.0",
+          "txUsage": 0,
+          "rxUsage": 0,
+          "estimatedRate": 424,
+          "rssi0": "-74",
+          "rssi1": 0,
+          "rssi2": 0,
+          "mcs": 9,
+          "rate": 866,
+          "idle": 0,
+          "wexindex": 0,
+          "starealmac": "00:00:00:00:00:00",
+          "static": 0
+        },
+        "plc": {
+          "rxphyrate": "",
+          "txphyrate": "",
+          "associateddevice": 0,
+          "interface": 0,
+          "ethernetspeed": 0
+        },
+        "lease": 75949,
+        "active": 1,
+        "parentalcontrol": {
+          "enable": 0,
+          "status": "Allowed",
+          "statusRemaining": 0,
+          "statusUntil": ""
+        },
+        "ping": { "average": 0 },
+        "scan": { "services": [] }
+      },
+      {
+        "id": 11,
+        "hostname": "Host-006",
+        "macaddress": "01:02:03:04:05:06",
+        "duid": "",
+        "ipaddress": "192.168.1.123",
+        "type": "DHCP",
+        "link": "Wifi 2.4",
+        "guest": 0,
+        "devicetype": "Device",
+        "firstseen": "2024-12-11T00:23:52+0100",
+        "lastseen": 69723,
+        "ip6address": [
+          {
+            "ipaddress": "fe80::1cae:a0fb:885c:513",
+            "status": "Preferred",
+            "lastseen": "2024-12-12T20:23:07+0100",
+            "lastscan": "2024-06-27T09:34:06+0200"
+          }
+        ],
+        "ethernet": {
+          "physicalport": 0,
+          "logicalport": 0,
+          "speed": 0,
+          "mode": ""
+        },
+        "wireless": {
+          "band": "2.4",
+          "txUsage": 0,
+          "rxUsage": 0,
+          "estimatedRate": 102,
+          "rssi0": "-51",
+          "rssi1": 0,
+          "rssi2": 0,
+          "mcs": 9,
+          "rate": 216,
+          "idle": 0,
+          "wexindex": 0,
+          "starealmac": "00:00:00:00:00:00",
+          "static": 0
+        },
+        "plc": {
+          "rxphyrate": "",
+          "txphyrate": "",
+          "associateddevice": 0,
+          "interface": 0,
+          "ethernetspeed": 0
+        },
+        "lease": "-146656",
+        "active": 0,
+        "parentalcontrol": {
+          "enable": 0,
+          "status": "Allowed",
+          "statusRemaining": 0,
+          "statusUntil": ""
+        },
+        "ping": { "average": 0 },
+        "scan": { "services": [] }
+      }
+    ]
+  },
+  "downloadThreshold": {
+    "wifiLow": 100,
+    "wifiHigh": 300,
+    "wifiMCS": 3,
+    "ethLow": 100,
+    "ethHigh": 1000
+  },
+  "wirelesshosts": [
+    {
+      "stations": [
+        { "macaddress": "01:02:03:04:19:5d", "caps": "0xff0" },
+        { "macaddress": "01:02:03:04:20:1a", "caps": "0xff0" },
+        { "macaddress": "01:02:03:04:87:b4", "caps": "0xff0" }
+      ]
+    },
+    {
+      "stations": [
+        { "macaddress": "01:02:03:04:84:3c", "caps": "0x1355" },
+        { "macaddress": "01:02:03:04:ac:f9", "caps": "0x13a5" }
+      ]
+    },
+    { "stations": [] },
+    { "stations": [] },
+    { "stations": [] },
+    { "stations": [] },
+    { "compatibility": 1, "stations": [] },
+    { "compatibility": 1, "stations": [] },
+    { "stations": [] },
+    { "stations": [] },
+    { "stations": [] },
+    { "stations": [] }
+  ],
+  "extenderhosts": []
+}

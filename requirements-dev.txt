@@ -1,0 +1,2 @@
+bboxpy
+pytest-homeassistant-custom-component
