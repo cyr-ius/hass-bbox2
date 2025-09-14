@@ -87,7 +87,7 @@ class BboxDeviceEntity(BboxEntity):
             (
                 device
                 for device in devices
-                if device["macaddress"] == self._device["macaddress"]
+                if device["macaddress"] == self._device.get("macaddress", None)
             ),
             {},
         )
