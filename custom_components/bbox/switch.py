@@ -1,12 +1,11 @@
 """Button for Bbox router."""
 
 import asyncio
-from dataclasses import dataclass
 import logging
+from dataclasses import dataclass
 from typing import Any, Final
 
 from bboxpy.exceptions import BboxException
-
 from homeassistant.components.switch import SwitchEntity, SwitchEntityDescription
 from homeassistant.core import HomeAssistant
 from homeassistant.helpers.entity_platform import AddEntitiesCallback

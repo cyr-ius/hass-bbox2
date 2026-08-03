@@ -3,7 +3,6 @@
 import logging
 
 from bboxpy.exceptions import BboxException
-
 from homeassistant.components.button import ButtonEntity, ButtonEntityDescription
 from homeassistant.core import HomeAssistant
 from homeassistant.helpers.entity_platform import AddEntitiesCallback

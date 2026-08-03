@@ -1,6 +1,6 @@
 """The tests for the bbox component."""
 
-from typing import Generator
+from collections.abc import Generator
 from unittest.mock import AsyncMock, MagicMock, patch
 
 import pytest
