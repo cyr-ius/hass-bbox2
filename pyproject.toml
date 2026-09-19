@@ -1,0 +1,40 @@
+[project]
+name = "hass-bbox2"
+version = "0.0.0"
+description = "Development environment for BBOX custom component for Home Assistant"
+requires-python = ">=3.14.2"
+dependencies = []
+
+[tool.setuptools]
+# Non-packageable project (see [tool.uv] package = false):
+# disable automatic discovery, which makes node_modules irrelevant.
+packages = []
+
+[dependency-groups]
+dev = [
+  "bboxpy",
+  "prek",
+  "pytest-homeassistant-custom-component",
+  "pytest-asyncio",
+  "python-typing-update",
+]
+
+[tool.pytest.ini_options]
+minversion = "7.0"
+addopts = "-ra --cov=custom_components --cov-report=term-missing --cov-fail-under=85"
+pythonpath = ["."]
+testpaths = ["tests/"]
+python_files = ["test_*.py"]
+asyncio_mode = "auto"
+log_cli = true
+
+[tool.uv]
+package = false
+
+[tool.ruff]
+target-version = "py313"
+line-length = 88
+
+[tool.ruff.lint]
+select = ["E", "F", "W", "I", "UP", "B", "SIM"]
+
