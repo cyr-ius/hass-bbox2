@@ -7,8 +7,7 @@ from collections.abc import Callable
 from datetime import timedelta
 from typing import Any
 
-from bboxpy import AuthorizationError, Bbox, BboxException
-from homeassistant.config_entries import ConfigEntry
+from bboxpy import AuthorizationError, Bbox, BboxException, ServiceNotFoundError
 from homeassistant.const import CONF_HOST, CONF_PASSWORD, CONF_VERIFY_SSL
 from homeassistant.core import HomeAssistant
 from homeassistant.exceptions import ConfigEntryAuthFailed
@@ -37,6 +36,7 @@ class BboxDataUpdateCoordinator(DataUpdateCoordinator):
             ),
         )
         self.entry = entry
+        self._speedtest_supported = True
 
     async def _async_setup(self) -> None:
         """Start Bbox connection."""
@@ -51,15 +51,6 @@ class BboxDataUpdateCoordinator(DataUpdateCoordinator):
             raise ConfigEntryAuthFailed(
                 f"Password expired for {self.entry.data[CONF_HOST]}"
             ) from error
-
-    async def update_configuration(
-        self, hass: HomeAssistant, entry: ConfigEntry
-    ) -> None:
-        """Update configuration."""
-        self.update_interval = timedelta(seconds=entry.options[CONF_REFRESH_RATE])
-        _LOGGER.debug("Coordinator refresh interval updated (%s)", self.update_interval)
-
-        await self.async_refresh()
 
     async def _async_update_data(self) -> dict[str, dict[str, Any]]:
         """Fetch data."""
@@ -85,16 +76,12 @@ class BboxDataUpdateCoordinator(DataUpdateCoordinator):
             _LOGGER.error(error)
             raise UpdateFailed from error
 
-        try:
-            speedtest_infos = self.check_list(
-                await self.bbox.speedtest.async_get_speedtest_infos()
-            )
-        except BboxException as error:
-            _LOGGER.warning("SpeedTest Module not found (%s)", error)
-            speedtest_infos = {}
+        cpu = await self._async_get_optional(self.bbox.device.async_get_bbox_cpu)
+        speedtest_infos = await self._async_get_speedtest_infos()
 
         return {
             "info": bbox_info,
+            "cpu": cpu,
             "memory": memory,
             "led": led,
             "devices": self.merge_objects(devices),
@@ -106,26 +93,60 @@ class BboxDataUpdateCoordinator(DataUpdateCoordinator):
             "speedtest_infos": speedtest_infos,
         }
 
+    async def _async_get_optional(self, func: Callable[..., Any]) -> dict[str, Any]:
+        """Execute a request which may be unsupported by the Bbox model."""
+        try:
+            result = await func()
+        except BboxException as error:
+            _LOGGER.debug("Error while execute: %s (%s)", func.__name__, error)
+            return {}
+        if (
+            isinstance(result, list)
+            and len(result) == 1
+            and isinstance(result[0], dict)
+        ):
+            return result[0]
+        return {}
+
+    async def _async_get_speedtest_infos(self) -> dict[str, Any]:
+        """Return the speedtest data, not requested anymore once known unsupported."""
+        if not self._speedtest_supported:
+            return {}
+        try:
+            return self.check_list(
+                await self.bbox.speedtest.async_get_speedtest_infos()
+            )
+        except ServiceNotFoundError as error:
+            self._speedtest_supported = False
+            _LOGGER.info(
+                "SpeedTest module is not available on this Bbox (%s), it will not be requested anymore",
+                error,
+            )
+        except BboxException as error:
+            _LOGGER.debug("Unable to get the SpeedTest data (%s)", error)
+        return {}
+
     @staticmethod
     def merge_objects(objs: Any) -> dict[str, Any]:
         """Merge objects return by the Bbox API."""
         assert isinstance(objs, list)
 
-        def merge(a: dict, b: dict, path=[]):
-            for key in b:
+        def merge(a: dict, b: dict, path: list[str] | None = None):
+            path = path or []
+            for key, value in b.items():
                 if key in a:
-                    if isinstance(a[key], dict) and isinstance(b[key], dict):
-                        merge(a[key], b[key], path + [str(key)])
-                    elif isinstance(a[key], list) and isinstance(b[key], list):
-                        a[key].extend(b[key])
-                    elif a[key] != b[key]:
+                    if isinstance(a[key], dict) and isinstance(value, dict):
+                        merge(a[key], value, path + [str(key)])
+                    elif isinstance(a[key], list) and isinstance(value, list):
+                        a[key].extend(value)
+                    elif a[key] != value:
                         raise ValueError(
                             f"Conflict merging the key {'.'.join(path + [str(key)])} of the "
                             "objects return by the Bbox API: "
-                            f"'{a[key]}' ({type(a[key])}) != '{b[key]}' ({type(b[key])})"
+                            f"'{a[key]}' ({type(a[key])}) != '{value}' ({type(value)})"
                         )
                 else:
-                    a[key] = b[key]
+                    a[key] = value
             return a
 
         result = objs[0]
