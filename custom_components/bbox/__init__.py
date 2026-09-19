@@ -7,7 +7,9 @@ from homeassistant.const import Platform
 from homeassistant.core import HomeAssistant
 from homeassistant.helpers import device_registry as dr
 
+from .const import BBOX_NAME, DOMAIN, MANUFACTURER
 from .coordinator import BboxDataUpdateCoordinator
+from .helpers import finditem
 
 type BBoxConfigEntry = ConfigEntry[BboxDataUpdateCoordinator]
 
@@ -25,6 +27,17 @@ async def async_setup_entry(hass: HomeAssistant, entry: BBoxConfigEntry) -> bool
     coordinator = BboxDataUpdateCoordinator(hass, entry)
     await coordinator.async_config_entry_first_refresh()
     entry.runtime_data = coordinator
+
+    # The Bbox device must exist before the devices connected to it (via_device_id)
+    device = finditem(coordinator.data, "info.device")
+    dr.async_get(hass).async_get_or_create(
+        config_entry_id=entry.entry_id,
+        identifiers={(DOMAIN, device.get("serialnumber", "ABC12345"))},
+        manufacturer=MANUFACTURER,
+        name=BBOX_NAME,
+        model=device.get("modelname"),
+        sw_version=device.get("main", {}).get("version"),
+    )
 
     entry.async_on_unload(entry.add_update_listener(_async_update_listener))
     await hass.config_entries.async_forward_entry_setups(entry, PLATFORMS)

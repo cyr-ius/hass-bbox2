@@ -66,8 +66,11 @@ class BboxDeviceEntity(BboxEntity):
             "name": str(self._device_name),
             "identifiers": {(DOMAIN, self._device_key)},
             "connections": {(dr.CONNECTION_NETWORK_MAC, device["macaddress"])},
-            "via_device": (DOMAIN, self.box_id),
         }
+        if box := dr.async_get(coordinator.hass).async_get_device_by_identifier(
+            (DOMAIN, self.box_id), coordinator.config_entry.entry_id
+        ):
+            self._attr_device_info["via_device_id"] = box.id
 
     @property
     def extra_state_attributes(self):
