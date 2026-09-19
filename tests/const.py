@@ -2,6 +2,7 @@ from pytest_homeassistant_custom_component.common import load_json_object_fixtur
 
 INFO = [load_json_object_fixture("info.json")]
 MEM = [load_json_object_fixture("memory.json")]
+CPU = [load_json_object_fixture("cpu.json")]
 LEDS = [load_json_object_fixture("leds.json")]
 DEVICES = [load_json_object_fixture("devices.json")]
 WAN_IP_STATS = [load_json_object_fixture("wan_ip_stats.json")]

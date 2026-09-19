@@ -58,3 +58,17 @@ async def test_switch_wifi(
     router.return_value.wifi.async_set_wireless_guest.assert_awaited_once_with(
         enable=True
     )
+
+
+@pytest.mark.asyncio
+async def test_switch_wps(
+    hass: HomeAssistant, config_entry: ConfigEntry, router: AsyncMock
+):
+    """Test that the WPS switch uses the wifi API."""
+    await hass.config_entries.async_setup(config_entry.entry_id)
+    await hass.async_block_till_done()
+
+    await hass.services.async_call(
+        Platform.SWITCH, "turn_on", {"entity_id": "switch.bbox_wps"}, blocking=True
+    )
+    router.return_value.wifi.async_set_wps.assert_awaited_once_with(enable=True)

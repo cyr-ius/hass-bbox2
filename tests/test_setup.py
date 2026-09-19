@@ -20,3 +20,20 @@ async def test_setup_entry(
     await hass.async_block_till_done()
 
     assert config_entry.state == ConfigEntryState.LOADED
+
+
+@pytest.mark.asyncio
+async def test_track_devices_option(
+    hass: HomeAssistant,
+    config_entry: ConfigEntry,
+    router: Generator[AsyncMock | MagicMock],
+) -> None:
+    """Test the device trackers are not created when the option is disabled."""
+    hass.config_entries.async_update_entry(
+        config_entry, options={"track_devices": False}
+    )
+    await hass.config_entries.async_setup(config_entry.entry_id)
+    await hass.async_block_till_done()
+
+    assert config_entry.state == ConfigEntryState.LOADED
+    assert not hass.states.async_entity_ids("device_tracker")

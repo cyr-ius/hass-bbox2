@@ -11,6 +11,7 @@ from pytest_homeassistant_custom_component.common import MockConfigEntry
 from custom_components.bbox.const import DOMAIN
 
 from .const import (
+    CPU,
     DEVICES,
     INFO,
     LEDS,
@@ -41,6 +42,7 @@ def mock_router() -> Generator[MagicMock | AsyncMock]:
         instance.device.async_get_bbox_info = AsyncMock(return_value=INFO)
         instance.device.async_get_bbox_mem = AsyncMock(return_value=MEM)
         instance.device.async_get_bbox_led = AsyncMock(return_value=LEDS)
+        instance.device.async_get_bbox_cpu = AsyncMock(return_value=CPU)
         instance.device.async_reboot = AsyncMock()
         instance.lan.async_get_connected_devices = AsyncMock(return_value=DEVICES)
         instance.wan.async_get_wan_ip_stats = AsyncMock(return_value=WAN_IP_STATS)
@@ -52,8 +54,7 @@ def mock_router() -> Generator[MagicMock | AsyncMock]:
         instance.wifi.async_get_wps = AsyncMock(return_value=WPS)
         instance.wifi.async_get_wireless = AsyncMock(return_value=WIFI)
         instance.wan.async_get_wan_ip = AsyncMock(return_value=WAN_IP)
-        instance.wps.async_on_wps = AsyncMock()
-        instance.wps.async_off_wps = AsyncMock()
+        instance.wifi.async_set_wps = AsyncMock()
         instance.wifi.async_set_wireless = AsyncMock()
         instance.wifi.async_set_wireless_24 = AsyncMock()
         instance.wifi.async_set_wireless_5 = AsyncMock()

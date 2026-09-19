@@ -150,3 +150,28 @@ async def test_form_already_configured(hass: HomeAssistant) -> None:
         # Assert the flow is aborted
         assert result2["type"] == FlowResultType.ABORT
         assert result2["reason"] == "already_configured"
+
+
+async def test_form_ip_host_disables_ssl_verification(hass: HomeAssistant) -> None:
+    """Test SSL verification is disabled when the host is an IP address."""
+    with patch("custom_components.bbox.config_flow.Bbox") as mock_bbox:
+        instance = mock_bbox.return_value
+        instance.async_login = AsyncMock()
+        instance.device.async_get_bbox_summary = AsyncMock(return_value=INFO)
+
+        result = await hass.config_entries.flow.async_init(
+            DOMAIN, context={"source": config_entries.SOURCE_USER}
+        )
+        result2 = await hass.config_entries.flow.async_configure(
+            result["flow_id"],
+            {
+                **MOCK_USER_INPUT,
+                "host": "192.168.1.254",
+                "use_tls": True,
+                "verify_ssl": True,
+            },
+        )
+
+    assert result2["type"] == FlowResultType.CREATE_ENTRY
+    assert result2["data"]["verify_ssl"] is False
+    assert mock_bbox.call_args.kwargs["verify_ssl"] is False
