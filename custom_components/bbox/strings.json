@@ -17,5 +17,15 @@
     "abort": {
       "already_configured": "[%key:common::config_flow::abort::already_configured_service%]"
     }
+  },
+  "options": {
+    "step": {
+      "init": {
+        "data": {
+          "refresh_rate": "Refresh rate (in seconds)",
+          "track_devices": "Track connected devices (device tracker)"
+        }
+      }
+    }
   }
 }

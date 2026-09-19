@@ -25,7 +25,8 @@
       "init": {
         "description": "Please reconfigure the connection with your Bbox.",
         "data": {
-          "refresh_rate": "Refresh rate (in seconds)"
+          "refresh_rate": "Refresh rate (in seconds)",
+          "track_devices": "Track connected devices (device tracker)"
         }
       }
     }
