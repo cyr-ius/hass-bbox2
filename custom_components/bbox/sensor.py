@@ -36,6 +36,27 @@ class BboxSensorDescription(SensorEntityDescription):
     value_fn: Callable[..., StateType] | None = None
 
 
+def _to_float(value: Any) -> float | None:
+    """Convert a value to float, None if the value is missing or not numeric."""
+    try:
+        return float(value)
+    except (TypeError, ValueError):
+        return None
+
+
+def _get_temperature(data: dict[str, Any]) -> float | None:
+    """Return the temperature in °C."""
+    if (
+        temperature := _to_float(finditem(data, "info.device.temperature.current"))
+    ) is not None:
+        return temperature
+    if (
+        temperature := _to_float(finditem(data, "cpu.device.cpu.temperature.main"))
+    ) is not None:
+        return round(temperature / 1000, 1)
+    return None
+
+
 SENSOR_TYPES: tuple[BboxSensorDescription, ...] = (
     BboxSensorDescription(
         key="info.device.temperature.current",
@@ -43,16 +64,18 @@ SENSOR_TYPES: tuple[BboxSensorDescription, ...] = (
         native_unit_of_measurement=UnitOfTemperature.CELSIUS,
         device_class=SensorDeviceClass.TEMPERATURE,
         icon="mdi:thermometer",
+        # Some models (ex: F@st5688b) only report the temperature (in m°C) in the cpu data
+        get_value=lambda self: _get_temperature(self.coordinator.data),
         state_class=SensorStateClass.MEASUREMENT,
     ),
     BboxSensorDescription(
         key="wan_ip_stats.wan.ip.stats.rx.bytes",
         name="Downloaded",
         device_class=SensorDeviceClass.DATA_SIZE,
-        native_unit_of_measurement=UnitOfInformation.KILOBITS,
+        native_unit_of_measurement=UnitOfInformation.KILOBYTES,
         icon="mdi:download-network",
         value_fn=lambda x: round(float(x) / 1000, 2),
-        state_class=SensorStateClass.MEASUREMENT,
+        state_class=SensorStateClass.TOTAL_INCREASING,
     ),
     BboxSensorDescription(
         key="wan_ip_stats.wan.ip.stats.rx.packetsdiscards",
@@ -98,10 +121,10 @@ SENSOR_TYPES: tuple[BboxSensorDescription, ...] = (
         key="wan_ip_stats.wan.ip.stats.tx.bytes",
         name="Uploaded",
         device_class=SensorDeviceClass.DATA_SIZE,
-        native_unit_of_measurement=UnitOfInformation.KILOBITS,
+        native_unit_of_measurement=UnitOfInformation.KILOBYTES,
         icon="mdi:upload-network",
         value_fn=lambda x: round(float(x) / 1000, 2),
-        state_class=SensorStateClass.MEASUREMENT,
+        state_class=SensorStateClass.TOTAL_INCREASING,
     ),
     BboxSensorDescription(
         key="wan_ip_stats.wan.ip.stats.tx.packetsdiscards",
@@ -182,10 +205,10 @@ SENSOR_TYPES: tuple[BboxSensorDescription, ...] = (
         name="Speedtest download",
         icon="mdi:speedometer",
         device_class=SensorDeviceClass.DATA_RATE,
-        value_fn=lambda x: (lambda x: float(x) if x.replace('.', '', 1).isdigit() else None)(x),
+        value_fn=lambda x: _to_float(x),
         native_unit_of_measurement=UnitOfDataRate.KILOBITS_PER_SECOND,
         state_class=SensorStateClass.MEASUREMENT,
-        entity_registry_enabled_default=False
+        entity_registry_enabled_default=False,
     ),
 )
 
@@ -205,13 +228,17 @@ class BboxSensor(BboxEntity, SensorEntity):
     @property
     def native_value(self):
         """Return sensor state."""
-        raw_value = (
-            self.entity_description.get_value(self)
-            if self.entity_description.get_value is not None
-            else finditem(self.coordinator.data, self.entity_description.key)
-        )
-        return (
-            self.entity_description.value_fn(raw_value)
-            if self.entity_description.value_fn is not None
-            else raw_value
-        )
+        try:
+            raw_value = (
+                self.entity_description.get_value(self)
+                if self.entity_description.get_value is not None
+                else finditem(self.coordinator.data, self.entity_description.key)
+            )
+            return (
+                self.entity_description.value_fn(raw_value)
+                if self.entity_description.value_fn is not None
+                else raw_value
+            )
+        except (TypeError, ValueError, ZeroDivisionError):
+            # Value missing or not supported by this Bbox model
+            return None

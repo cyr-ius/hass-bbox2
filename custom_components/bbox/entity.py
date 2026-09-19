@@ -72,10 +72,7 @@ class BboxDeviceEntity(BboxEntity):
     @property
     def extra_state_attributes(self):
         """Return extra attributes."""
-        return {
-            "link": self._device.get("link"),
-            "last_seen": self._device.get("lastseen"),
-        }
+        return {"link": self._device.get("link")}
 
     @callback
     def _handle_coordinator_update(self) -> None:

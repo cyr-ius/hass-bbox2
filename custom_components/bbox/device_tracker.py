@@ -4,13 +4,20 @@ from __future__ import annotations
 
 from typing import Any
 
-from homeassistant.components.device_tracker import SourceType
-from homeassistant.components.device_tracker.config_entry import ScannerEntity
+from homeassistant.components.device_tracker import (
+    DOMAIN as DEVICE_TRACKER_DOMAIN,
+)
+from homeassistant.components.device_tracker import (
+    ScannerEntity,
+    SourceType,
+)
 from homeassistant.components.sensor import SensorEntityDescription
 from homeassistant.core import HomeAssistant
+from homeassistant.helpers import entity_registry as er
 from homeassistant.helpers.entity_platform import AddEntitiesCallback
 
 from . import BBoxConfigEntry
+from .const import CONF_TRACK_DEVICES, DEFAULT_TRACK_DEVICES
 from .coordinator import BboxDataUpdateCoordinator
 from .entity import BboxDeviceEntity
 
@@ -19,6 +26,14 @@ async def async_setup_entry(
     hass: HomeAssistant, entry: BBoxConfigEntry, async_add_entities: AddEntitiesCallback
 ) -> None:
     """Set up sensor."""
+    if not entry.options.get(CONF_TRACK_DEVICES, DEFAULT_TRACK_DEVICES):
+        # Remove the trackers created before the option was disabled
+        registry = er.async_get(hass)
+        for reg_entry in er.async_entries_for_config_entry(registry, entry.entry_id):
+            if reg_entry.domain == DEVICE_TRACKER_DOMAIN:
+                registry.async_remove(reg_entry.entity_id)
+        return
+
     coordinator = entry.runtime_data
     description = SensorEntityDescription(key="tracker", translation_key="tracker")
     devices = coordinator.data.get("devices", {}).get("hosts", {}).get("list", [])

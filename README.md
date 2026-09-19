@@ -45,7 +45,7 @@ Only the routers with Bbox OS are supported:
 This platform offers presence detection by keeping track of the
 devices connected to a [Bbox](http://www.bouygues.fr/) router.
 
-Ability to disable this option by integration options
+Ability to disable this option by integration options ("Track connected devices"). The Bbox can be configured with its IP address (ex: 192.168.1.254) instead of `mabbox.bytel.fr`; SSL verification is then disabled automatically (this requires `bboxpy` > 1.4.0).
 
 ### Notes
 

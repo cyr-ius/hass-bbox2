@@ -2,6 +2,7 @@
 
 from __future__ import annotations
 
+import ipaddress
 import logging
 from collections.abc import Mapping
 from typing import Any
@@ -16,16 +17,28 @@ from homeassistant.helpers.aiohttp_client import async_create_clientsession
 
 from .const import (
     CONF_REFRESH_RATE,
+    CONF_TRACK_DEVICES,
     CONF_USE_TLS,
     DEFAULT_HOST,
     DEFAULT_REFRESH_RATE,
     DEFAULT_TITLE,
+    DEFAULT_TRACK_DEVICES,
     DEFAULT_USE_TLS,
     DEFAULT_VERIFY_SSL,
     DOMAIN,
 )
 
 _LOGGER = logging.getLogger(__name__)
+
+
+def _is_ip_address(host: str) -> bool:
+    """Return True if the host is an IP address."""
+    try:
+        ipaddress.ip_address(host.strip("[]"))
+    except ValueError:
+        return False
+    return True
+
 
 SCHEMA = vol.Schema(
     {
@@ -56,6 +69,11 @@ class ConfigFlow(config_entries.ConfigFlow, domain=DOMAIN):
         """Handle the initial step."""
         errors: dict[str, str] = {}
         if user_input:
+            user_input = dict(user_input)
+            if user_input[CONF_VERIFY_SSL] and _is_ip_address(user_input[CONF_HOST]):
+                # The Bbox certificate is issued for a hostname, not for an IP address
+                _LOGGER.debug("Host is an IP address, SSL verification is disabled")
+                user_input[CONF_VERIFY_SSL] = False
             try:
                 api = Bbox(
                     hostname=user_input[CONF_HOST],
@@ -146,7 +164,14 @@ class OptionsFlow(config_entries.OptionsFlow):
             step_id="init",
             data_schema=self.add_suggested_values_to_schema(
                 vol.Schema(
-                    {vol.Optional(CONF_REFRESH_RATE, default=DEFAULT_REFRESH_RATE): int}
+                    {
+                        vol.Optional(
+                            CONF_REFRESH_RATE, default=DEFAULT_REFRESH_RATE
+                        ): int,
+                        vol.Optional(
+                            CONF_TRACK_DEVICES, default=DEFAULT_TRACK_DEVICES
+                        ): bool,
+                    }
                 ),
                 self.config_entry.options,
             ),

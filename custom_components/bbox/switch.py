@@ -41,9 +41,9 @@ SWITCH_TYPES: Final[tuple[BboxSwitchEntityDescription, ...]] = (
         translation_key="wps",
         name="Wps",
         state="wps.wps.enable",
-        api="wps",
-        turn_on="async_on_wps",
-        turn_off="async_off_wps",
+        api="wifi",
+        turn_on="async_set_wps",
+        turn_off="async_set_wps",
     ),
     BboxSwitchEntityDescription(
         key="wifi",
