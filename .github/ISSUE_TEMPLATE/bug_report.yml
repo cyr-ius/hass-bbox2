@@ -1,0 +1,98 @@
+---
+name: 🐞 Bug report / Signaler un bug
+description: Report a problem with the Bouygues Bbox integration. / Signaler un problème avec l'intégration Bouygues Bbox.
+labels: ["bug"]
+body:
+  - type: markdown
+    attributes:
+      value: |
+        Thanks for taking the time to report a bug. Please fill in every required field: an issue without a diagnostics file cannot be investigated.
+
+        Merci de prendre le temps de signaler un bug. Veuillez remplir tous les champs obligatoires : une issue sans fichier de diagnostic ne peut pas être analysée.
+
+  - type: input
+    id: model
+    attributes:
+      label: Device model / Modèle de l'appareil
+      description: |
+        The commercial name written on the product label or your invoice (not what Home Assistant displays).
+        Le nom commercial inscrit sur l'étiquette du produit ou sur votre facture (pas ce qui apparaît dans Home Assistant).
+
+  - type: input
+    id: ha_version
+    attributes:
+      label: Home Assistant version / Version de Home Assistant
+      placeholder: e.g. 2026.11.0
+    validations:
+      required: true
+
+  - type: input
+    id: integration_version
+    attributes:
+      label: Integration version / Version de l'intégration
+      placeholder: e.g. 1.0.0
+    validations:
+      required: true
+
+  - type: dropdown
+    id: regression
+    attributes:
+      label: Did it work before? / Est-ce que cela fonctionnait avant ?
+      options:
+        - "No, it never worked / Non, cela n'a jamais fonctionné"
+        - "Yes, it worked in a previous version / Oui, cela fonctionnait dans une version précédente"
+        - "Yes, and nothing was updated in between / Oui, et aucune mise à jour n'a été faite entre-temps"
+    validations:
+      required: true
+
+  - type: input
+    id: last_working_version
+    attributes:
+      label: Last working version / Dernière version fonctionnelle
+      description: Only if it worked before. / Uniquement si cela fonctionnait avant.
+
+  - type: textarea
+    id: description
+    attributes:
+      label: Describe the bug / Description du problème
+      description: |
+        A clear and concise description of what happens and what you expected.
+        Une description claire et précise de ce qui se passe et de ce que vous attendiez.
+    validations:
+      required: true
+
+  - type: textarea
+    id: reproduce
+    attributes:
+      label: Steps to reproduce / Étapes pour reproduire
+      placeholder: |
+        1. ...
+        2. ...
+        3. ...
+
+  - type: textarea
+    id: diagnostics
+    attributes:
+      label: Diagnostics file / Fichier de diagnostic
+      description: |
+        Settings → Devices & services → Bouygues Bbox → ⋮ → Download diagnostics, then drag and drop the file here. Sensitive data is redacted.
+        Paramètres → Appareils et services → Bouygues Bbox → ⋮ → Télécharger les diagnostics, puis glissez-déposez le fichier ici. Les données sensibles sont masquées.
+    validations:
+      required: true
+
+  - type: textarea
+    id: logs
+    attributes:
+      label: Debug logs / Journaux de débogage
+      description: |
+        Enable debug logging on the integration, reproduce the problem, then paste the relevant logs.
+        Activez la journalisation de débogage sur l'intégration, reproduisez le problème, puis collez les journaux pertinents.
+      render: text
+
+  - type: textarea
+    id: additional
+    attributes:
+      label: Additional context / Contexte supplémentaire
+      description: |
+        Screenshots, network setup, recent changes on your side…
+        Captures d'écran, configuration réseau, changements récents de votre côté…

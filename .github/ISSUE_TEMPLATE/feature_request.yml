@@ -1,0 +1,37 @@
+---
+name: ✨ Feature request / Demande de fonctionnalité
+description: Suggest an idea for the Bouygues Bbox integration. / Proposer une idée pour l'intégration Bouygues Bbox.
+labels: ["enhancement"]
+body:
+  - type: textarea
+    id: problem
+    attributes:
+      label: Problem / Problème
+      description: |
+        What problem would this feature solve?
+        Quel problème cette fonctionnalité résoudrait-elle ?
+    validations:
+      required: true
+
+  - type: textarea
+    id: solution
+    attributes:
+      label: Proposed solution / Solution proposée
+      description: |
+        Describe what you would like to happen.
+        Décrivez ce que vous souhaiteriez.
+    validations:
+      required: true
+
+  - type: input
+    id: model
+    attributes:
+      label: Device model / Modèle de l'appareil
+      description: |
+        If the feature depends on a specific model.
+        Si la fonctionnalité dépend d'un modèle précis.
+
+  - type: textarea
+    id: additional
+    attributes:
+      label: Additional context / Contexte supplémentaire
