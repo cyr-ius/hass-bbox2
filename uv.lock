@@ -405,14 +405,14 @@ wheels = [
 
 [[package]]
 name = "bboxpy"
-version = "1.4.0"
+version = "1.4.1"
 source = { registry = "https://pypi.org/simple" }
 dependencies = [
     { name = "aiohttp" },
 ]
-sdist = { url = "https://files.pythonhosted.org/packages/8d/25/c31ce6bd707da711fdd382098fdc8d3a1181bb49051b958a275b365049c5/bboxpy-1.4.0.tar.gz", hash = "sha256:a9b9be7adf76aa221687db07ba63b6dff4d695193e9bb31da4cae08c5e135251", size = 32535, upload-time = "2025-08-09T14:30:47.338Z" }
+sdist = { url = "https://files.pythonhosted.org/packages/39/e2/591ce7cfb137fa79dcd7c94258fd4b39efd1f6bad6e46e792a4bcc5ecb54/bboxpy-1.4.1.tar.gz", hash = "sha256:64f8f683243dfb4378ba9e65e5e15620de392f467b701c7520882b9234dfbb7e", size = 71009, upload-time = "2026-09-19T17:35:21.549Z" }
 wheels = [
-    { url = "https://files.pythonhosted.org/packages/15/2c/cd9744be5b4d7952f038a637a8322094c928b07b634e2ad220ca422b27b3/bboxpy-1.4.0-py3-none-any.whl", hash = "sha256:de649cb3a80277b3b261b4f3f08826f117514ed442149d647a0f3d9404ea8db6", size = 24889, upload-time = "2025-08-09T14:30:45.905Z" },
+    { url = "https://files.pythonhosted.org/packages/0f/b8/45678974fc497d633911f37dd7f39b0dd7e6229fe78d5c692717d48880c5/bboxpy-1.4.1-py3-none-any.whl", hash = "sha256:2adb88f61ec0803fe4d03e41e6228d07ba426a34741681ce83f8dd2259a0dde5", size = 37865, upload-time = "2026-09-19T17:35:20.198Z" },
 ]
 
 [[package]]
